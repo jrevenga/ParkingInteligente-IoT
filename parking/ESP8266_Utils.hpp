@@ -1,14 +1,20 @@
 void ConnectWiFi() {
-  Serial.println("");
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
+
   while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
+    delay(500);
     Serial.print('.');
   }
+
+  randomSeed(micros());
+  
   Serial.println("");
-  Serial.print("Iniciado STA:\t");
-  Serial.println(ssid);
-  Serial.print("IP address:\t");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 }

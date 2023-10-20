@@ -14,6 +14,8 @@
 const int pinServo = 2; // Pin del servomotor
 Servo servo;
 
+const int pinZumbador = 33;
+
 const int echoPin1 = 39; // Pin de echo del sensor de distancia 1
 const int trigPin1 = 12; // Pin de trig del sensor de distancia 1
 const int echoPin2 = 35; // Pin de echo del sensor de distancia 2
@@ -96,17 +98,17 @@ void loop() {
     plazasLibres--;
     if (distancia1 < 5) {
       // Si está demasiado cerca, activa el zumbador
-      tone(BUZZZER_PIN, 1000, 0);
+      tone(pinZumbador, 1000, 0);
     } else {
       // Si no está demasiado cerca, apaga el zumbador
-      noTone(BUZZZER_PIN);
+      noTone(pinZumbador);
     }
   } else {
     msg = "libre";
     mqttClient.publish("esp32/plaza1", msg.c_str());
     digitalWrite(redLedPin1, LOW);
     digitalWrite(greenLedPin1, HIGH);
-    noTone(BUZZZER_PIN);
+    noTone(pinZumbador);
   }
 
   //Calculo distancia sensor 2
@@ -182,7 +184,18 @@ void loop() {
     lcd.print("ALARMA");
     lcd.setCursor(0, 1);
     lcd.print("Evacuar edificio");
-    alarma();
+    tone(pinZumbador, 800, 0);
+    delay(600);
+    noTone(pinZumbador);
+    delay(500);
+    tone(pinZumbador, 800, 0);
+    delay(600);
+    noTone(pinZumbador);
+    delay(500);
+    tone(pinZumbador, 800, 0);
+    delay(1200);
+    noTone(pinZumbador);
+    //alarma();
   }
 
   // Verificar si el estacionamiento está ocupado o libre
