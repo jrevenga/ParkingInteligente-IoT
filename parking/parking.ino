@@ -4,39 +4,14 @@
 #include <DHT.h>
 #include <ESP32Servo.h>
 
-#include "config.h " // Configuraton file
+#include "config.h" //Configuraton file
 #include "MQTT.hpp" //MQTT functions
 #include "ESP8266_Utils.hpp" //Wifi connection
 #include "ESP8266_Utils_MQTT.hpp" //MQTT Connection
 
-#include "Alarma.hpp"
-
-const int pinServo = 2; // Pin del servomotor
 Servo servo;
-
-const int pinZumbador = 33;
-
-const int echoPin1 = 39; // Pin de echo del sensor de distancia 1
-const int trigPin1 = 12; // Pin de trig del sensor de distancia 1
-const int echoPin2 = 35; // Pin de echo del sensor de distancia 2
-const int trigPin2 = 25; // Pin de trig del sensor de distancia 2
-const int echoPin3 = 34; // Pin de echo del sensor de distancia 3
-const int trigPin3 = 23; // Pin de trig del sensor de distancia 3
-
-const int redLedPin1 = 14; // Pin del LED rojo para el sensor 1
-const int greenLedPin1 = 16; // Pin del LED verde para el sensor 1
-const int redLedPin2 = 27; // Pin del LED rojo para el sensor 2
-const int greenLedPin2 = 26; // Pin del LED verde para el sensor 2
-const int redLedPin3 = 21; // Pin del LED rojo para el sensor 3
-const int greenLedPin3 = 17; // Pin del LED verde para el sensor 3
-
-const int dhtPin = 22; // Pin del sensor de temperatura
 DHT dht(dhtPin, DHT11);
-
-const int smokeSensorPin = 36; // Pin del sensor de humo MQ-2
-LiquidCrystal lcd(13,32,4,5,18,19);
-
-String msg;
+String msg1, msg2, msg3;
 bool parkingOcupado = false; // Variable para rastrear el estado del estacionamiento
 
 void setup(void) {
@@ -64,12 +39,13 @@ void setup(void) {
 }
 
 void loop() {
+
   HandleMqtt();
 
   if (Serial.available() > 0) {
     String matricula = Serial.readStringUntil('\n');  // Lee la matrícula desde la comunicación serial
     if (matricula.length() == 8 && !parkingOcupado) {
-      mqttClient.publish("esp32/matricula", (matricula).c_str());
+      mqttClient.publish("parking/matricula", (matricula).c_str());
       // Abre la barrera
       lcd.clear();
       lcd.print("Bienvenido");
@@ -91,8 +67,7 @@ void loop() {
 
   // Verificar si hay un objeto cerca del sensor 1
   if (distancia1 < 10) {
-    msg = "ocupado";
-    mqttClient.publish("esp32/plaza1", msg.c_str());
+    msg1 = "ocupado";
     digitalWrite(redLedPin1, HIGH);
     digitalWrite(greenLedPin1, LOW);
     plazasLibres--;
@@ -104,12 +79,13 @@ void loop() {
       noTone(pinZumbador);
     }
   } else {
-    msg = "libre";
-    mqttClient.publish("esp32/plaza1", msg.c_str());
+    msg1 = "libre";
     digitalWrite(redLedPin1, LOW);
     digitalWrite(greenLedPin1, HIGH);
     noTone(pinZumbador);
   }
+  //Subir el topic del estado del estacionamiento
+  mqttClient.publish("parking/plazas/1", msg1.c_str());
 
   //Calculo distancia sensor 2
   digitalWrite(trigPin2, HIGH);
@@ -120,17 +96,17 @@ void loop() {
 
   // Verificar si hay un objeto cerca del sensor 2
   if (distancia2 < 10) {
-    msg = "ocupado";
-    mqttClient.publish("esp32/plaza2", msg.c_str());
+    msg2 = "ocupado";
     digitalWrite(redLedPin2, HIGH);
     digitalWrite(greenLedPin2, LOW);
     plazasLibres--;
   } else {
-    msg = "libre";
-    mqttClient.publish("esp32/plaza2", msg.c_str());
+    msg2 = "libre";
     digitalWrite(redLedPin2, LOW);
     digitalWrite(greenLedPin2, HIGH);
   }
+  //Subir el topic del estado del estacionamiento
+  mqttClient.publish("parking/plazas/2", msg2.c_str());
 
   //Calculo distancia sensor 3
   digitalWrite(trigPin3, HIGH);
@@ -141,61 +117,34 @@ void loop() {
 
   // Verificar si hay un objeto cerca del sensor 3
   if (distancia3 < 10) {
-    msg = "ocupado";
-    mqttClient.publish("esp32/plaza3", msg.c_str());
+    msg3 = "ocupado";
     digitalWrite(redLedPin3, HIGH);
     digitalWrite(greenLedPin3, LOW);
     plazasLibres--;
   } else {
-    msg = "libre";
-    mqttClient.publish("esp32/plaza3", msg.c_str());
+    msg3 = "libre";
     digitalWrite(redLedPin3, LOW);
     digitalWrite(greenLedPin3, HIGH);
   }
+  //Subir el topic del estado del estacionamiento
+  mqttClient.publish("parking/plazas/3", msg3.c_str());
+
+  //Subir topic de plazas libres
+  mqttClient.publish("parking/plazas/plazasLibres", String(plazasLibres).c_str());
 
   //Medir temperatura, humedad y humo
   float temperatura = dht.readTemperature();
-  mqttClient.publish("esp32/temperatura", (String(temperatura)+ "°C").c_str());
+  mqttClient.publish("parking/temperatura", String(temperatura).c_str());
 
   float humedad = dht.readHumidity();
-  msg = String(humedad) + " %";
-  mqttClient.publish("esp32/humedad", (String(humedad)+ "%").c_str());
+  mqttClient.publish("parking/humedad", String(humedad).c_str());
 
   int smokeValue = analogRead(smokeSensorPin);
-  msg = String(smokeValue);
-  mqttClient.publish("esp32/humo", String(smokeValue).c_str());
-
-  // Mostrar el estado del estacionamiento en la pantalla LCD
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  if (parkingOcupado) {
-    lcd.print("Ocupado");
-  } else {
-    lcd.print("Libre  Plazas:" + String(plazasLibres));
-  }
-  lcd.setCursor(0, 1);
-  lcd.print(String(temperatura) + "C  Hum:" + String(humedad) + "%");
 
   // Comprueba el sensor de humo
   if (smokeValue > 1000) {
     // Si se detecta humo, activa la alarma y muestra un mensaje en la pantalla
-    lcd.clear();
-    lcd.setCursor(0, 0);
-    lcd.print("ALARMA");
-    lcd.setCursor(0, 1);
-    lcd.print("Evacuar edificio");
-    tone(pinZumbador, 800, 0);
-    delay(600);
-    noTone(pinZumbador);
-    delay(500);
-    tone(pinZumbador, 800, 0);
-    delay(600);
-    noTone(pinZumbador);
-    delay(500);
-    tone(pinZumbador, 800, 0);
-    delay(1200);
-    noTone(pinZumbador);
-    //alarma();
+    mqttClient.publish("parking/humo", String("alarma").c_str());
   }
 
   // Verificar si el estacionamiento está ocupado o libre
@@ -204,7 +153,6 @@ void loop() {
   } else {
     parkingOcupado = false;
   }
-
 
   delay(500);
 }
