@@ -12,6 +12,7 @@
 Servo servo;
 DHT dht(dhtPin, DHT11);
 String msg1, msg2, msg3;
+int n = 0;
 bool parkingOcupado = false; // Variable para rastrear el estado del estacionamiento
 
 void setup(void) {
@@ -85,7 +86,7 @@ void loop() {
     noTone(pinZumbador);
   }
   //Subir el topic del estado del estacionamiento
-  mqttClient.publish("parking/plazas/1", msg1.c_str());
+  //mqttClient.publish("parking/plazas/1", msg1.c_str());
 
   //Calculo distancia sensor 2
   digitalWrite(trigPin2, HIGH);
@@ -106,7 +107,7 @@ void loop() {
     digitalWrite(greenLedPin2, HIGH);
   }
   //Subir el topic del estado del estacionamiento
-  mqttClient.publish("parking/plazas/2", msg2.c_str());
+  //mqttClient.publish("parking/plazas/2", msg2.c_str());
 
   //Calculo distancia sensor 3
   digitalWrite(trigPin3, HIGH);
@@ -127,32 +128,35 @@ void loop() {
     digitalWrite(greenLedPin3, HIGH);
   }
   //Subir el topic del estado del estacionamiento
-  mqttClient.publish("parking/plazas/3", msg3.c_str());
+  //mqttClient.publish("parking/plazas/3", msg3.c_str());
 
-  //Subir topic de plazas libres
-  mqttClient.publish("parking/plazas/plazasLibres", String(plazasLibres).c_str());
+  if (n % 3 == 0){
+    //Subir topic de plazas libres
+    mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
+  }
+  
+  if (n % 20 == 0){
+    //Medir temperatura, humedad y humo
+    float temperatura = dht.readTemperature();
+    mqttClient.publish("parking/temperatura", String(temperatura).c_str());
 
-  //Medir temperatura, humedad y humo
-  float temperatura = dht.readTemperature();
-  mqttClient.publish("parking/temperatura", String(temperatura).c_str());
-
-  float humedad = dht.readHumidity();
-  mqttClient.publish("parking/humedad", String(humedad).c_str());
+    int humedad = dht.readHumidity();
+    mqttClient.publish("parking/humedad", String(humedad).c_str());
+  }
 
   int smokeValue = analogRead(smokeSensorPin);
-
-  // Comprueba el sensor de humo
-  if (smokeValue > 1000) {
-    // Si se detecta humo, activa la alarma y muestra un mensaje en la pantalla
-    mqttClient.publish("parking/humo", String("alarma").c_str());
+  if (smokeValue > 3000) {
+    // Si se detecta humo, manda mensaje para activar la alarma
+    mqttClient.publish("parking/humo", String("on").c_str());
   }
 
   // Verificar si el estacionamiento está ocupado o libre
-  if ((distancia1 < 10 && distancia2 < 10 && distancia3 < 10) || smokeValue > 1000) {
+  if ((distancia1 < 10 && distancia2 < 10 && distancia3 < 10) || smokeValue > 3000) {
     parkingOcupado = true;
   } else {
     parkingOcupado = false;
   }
-
+  
+  n++;
   delay(500);
 }

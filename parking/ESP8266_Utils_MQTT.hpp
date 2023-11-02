@@ -12,6 +12,7 @@ void ConnectMqtt() {
   while (!mqttClient.connected()) {
     Serial.println("Starting MQTT connection...");
     if (mqttClient.connect(MQTT_CLIENT_NAME,"ubicua","ubicua")) {
+      Serial.println("Conectado");
       SuscribeMqtt();
     }
     else {
