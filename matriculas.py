@@ -12,13 +12,17 @@ esp32 = serial.Serial('COM6', 115200)
 cap = cv2.VideoCapture(0)
 
 # Tiempo mínimo entre detecciones para evitar envío excesivo de señales
-tiempo_entre_detecciones = 8  #8 segundos
+tiempo_entre_detecciones = 8  # 8 segundos
 ultimo_tiempo_deteccion = 0
 
 while True:
     ret, frame = cap.read()
     if not ret:
         continue
+
+    # Agregar una línea divisoria en el centro de la pantalla
+    frame_height, frame_width, _ = frame.shape
+    cv2.line(frame, (frame_width // 2, 0), (frame_width // 2, frame_height), (0, 0, 255), 2)
 
     # Utiliza un clasificador de matrículas (debes entrenar uno o usar uno preentrenado)
     # Aquí un ejemplo simple utilizando un detector de bordes Canny
@@ -51,8 +55,17 @@ while True:
         if tiempo_actual - ultimo_tiempo_deteccion >= tiempo_entre_detecciones:
             print("Matrícula detectada:", detected_plate)
 
-            # Envía la matricula a Arduino
-            esp32.write(detected_plate.encode() + b'\n') # Agrega '\n' para indicar el final del comando
+            # Determine si el coche está entrando o saliendo
+            if x < frame_width // 2:  # Si la matrícula está a la izquierda de la pantalla
+                print("El coche está entrando.")
+                entrada_o_salida = "entrada"
+            else:
+                print("El coche está saliendo.")
+                entrada_o_salida = "salida"
+
+            # Envía la matrícula y la dirección a Arduino
+            comando = f"{detected_plate},{entrada_o_salida}"
+            esp32.write(comando.encode() + b'\n')  # Agrega '\n' para indicar el final del comando
 
             # Actualiza el tiempo de última detección
             ultimo_tiempo_deteccion = tiempo_actual

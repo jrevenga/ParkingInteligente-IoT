@@ -5,7 +5,7 @@ PubSubClient mqttClient(espClient);
 
 void SuscribeMqtt() {
   //mqttClient.subscribe("parking/#");
-  mqttClient.subscribe("parking/matricula");
+  mqttClient.subscribe("parking/matricula/#");
   mqttClient.subscribe("parking/plazasLibres");
   mqttClient.subscribe("parking/temperatura");
   mqttClient.subscribe("parking/humedad");
@@ -13,7 +13,7 @@ void SuscribeMqtt() {
 }
 
 String content = "";
-String message, nPlazas, temp, hum;
+String message, alarma, nPlazas, temp, hum;
 void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
   /*
   Serial.print("Received on ");
@@ -26,10 +26,38 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
   Serial.print(content);
   Serial.println(); 
   */
-  if (strcmp(topic, "parking/humo") == 0) {
+  if (strcmp(topic, "parking/matricula/entrada") == 0) {
     message = "";
     for (int i = 0; i < length; i++) {
       message += (char)payload[i];
+    }
+    // Abre la barrera
+      lcd.clear();
+      lcd.print("Bienvenido");
+      servo.write(90);
+      delay(5000);
+      servo.write(0);
+      delay(1000);
+  }
+
+  if (strcmp(topic, "parking/matricula/salida") == 0) {
+    message = "";
+    for (int i = 0; i < length; i++) {
+      message += (char)payload[i];
+    }
+    // Abre la barrera
+      lcd.clear();
+      lcd.print("Hasta pronto");
+      servo.write(90);
+      delay(5000);
+      servo.write(0);
+      delay(1000);
+  }
+
+  if (strcmp(topic, "parking/humo") == 0) {
+    alarma = "";
+    for (int i = 0; i < length; i++) {
+      alarma += (char)payload[i];
     }
   }
 
@@ -55,7 +83,7 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
   }
 
   // Mostrar datos en la pantalla LCD
-  if (message == "on") {
+  if (alarma == "on") {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("ALARMA");
@@ -73,7 +101,7 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
     tone(pinZumbador, 800, 0);
     delay(1200);
     noTone(pinZumbador);
-    message = "off";
+    alarma = "off";
   } else {
     lcd.clear();
     lcd.setCursor(0, 0);
