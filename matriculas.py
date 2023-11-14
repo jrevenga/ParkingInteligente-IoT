@@ -24,6 +24,10 @@ while True:
     frame_height, frame_width, _ = frame.shape
     cv2.line(frame, (frame_width // 2, 0), (frame_width // 2, frame_height), (0, 0, 255), 2)
 
+    # Agregar letreros de entrada y salida en la pantalla
+    cv2.putText(frame, "Entrada", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+    cv2.putText(frame, "Salida", (frame_width - 150, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
     # Utiliza un clasificador de matrículas (debes entrenar uno o usar uno preentrenado)
     # Aquí un ejemplo simple utilizando un detector de bordes Canny
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

@@ -35,7 +35,10 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
       lcd.clear();
       lcd.print("Bienvenido");
       servo.write(90);
-      delay(5000);
+      delay(4000);
+      while(digitalRead(pinSensorBarrera) == LOW){
+        delay(1000);
+      }
       servo.write(0);
       delay(1000);
   }
@@ -49,7 +52,10 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
       lcd.clear();
       lcd.print("Hasta pronto");
       servo.write(90);
-      delay(5000);
+      delay(4000);
+      while(digitalRead(pinSensorBarrera) == LOW){
+        delay(1000);
+      }
       servo.write(0);
       delay(1000);
   }

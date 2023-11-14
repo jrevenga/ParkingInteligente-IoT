@@ -31,6 +31,7 @@ void setup(void) {
   pinMode(greenLedPin2, OUTPUT);
   pinMode(redLedPin3, OUTPUT);
   pinMode(greenLedPin3, OUTPUT);
+  pinMode(pinSensorBarrera, INPUT);
   servo.attach(pinServo);
   servo.write(0);   // Asegura que la barrera comience en posición cerrada
 }
@@ -51,11 +52,13 @@ void loop() {
             if (direccion == "entrada") {
               if (plazasLibres > 0 && smokeValue < 2800){
                 plazasLibres --;
+                mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
                 mqttClient.publish("parking/matricula/entrada", matricula.c_str());
               }
             } else if (direccion == "salida") {
               if (plazasLibres < capacidad){
                 plazasLibres ++;
+                mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
               }
               mqttClient.publish("parking/matricula/salida", matricula.c_str());
             }
@@ -131,11 +134,6 @@ void loop() {
     mqttClient.publish("parking/plazas/2", msg2.c_str());
     mqttClient.publish("parking/plazas/3", msg3.c_str());
   }
-
-  if (n % 5 == 0){
-    //Subir topic de plazas libres
-    mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
-  }
   
   if (n % 40 == 0){
     //Medir temperatura, humedad y humo
@@ -144,6 +142,10 @@ void loop() {
 
     int humedad = dht.readHumidity();
     mqttClient.publish("parking/humedad", String(humedad).c_str());
+  }
+
+  if (n == 0){
+    mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
   }
 
   smokeValue = analogRead(smokeSensorPin);

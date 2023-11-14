@@ -14,6 +14,7 @@ const int greenLedPin3 = 17; // Pin del LED verde para el sensor 3
 const int pinServo = 15; // Pin del servomotor
 const int dhtPin = 22; // Pin del sensor de temperatura
 const int smokeSensorPin = 36; // Pin del sensor de humo MQ-2
+const int pinSensorBarrera = 2; // Pin del sensor de infrarojos
 
 LiquidCrystal lcd(13,32,4,5,18,19);
 Servo servo;
