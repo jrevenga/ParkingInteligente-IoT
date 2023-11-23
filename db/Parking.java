@@ -11,14 +11,16 @@ package db;
 public class Parking {
     private int id;
     private String nombre;
+    private String ciudad;
 
     public Parking() {
         // default
     }
 
-    public Parking(int id, String nombre) {
+    public Parking(int id, String nombre, string ciudad) {
         this.id = id;
         this.nombre = nombre;
+        this.ciudad = ciudad;
     }
 
     public int getId() {
@@ -35,6 +37,14 @@ public class Parking {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
     }
 }
 
