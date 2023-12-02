@@ -1,50 +1,67 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package db;
 
-/**
- *
- * @author Esteban G
- */
-public class Parking {
+public class Parking 
+{
     private int id;
-    private String nombre;
-    private String ciudad;
-
-    public Parking() {
-        // default
+    private int ciudad;
+    private String name;
+    private Double latitude;
+    private Double longitude;
+ 
+    // constructors
+    public Parking() 
+    {
+    	this.id = 0;
+    	this.name = null;
+    	this.latitude = 0.0;
+    	this.longitude = 0.0;
     }
 
-    public Parking(int id, String nombre, string ciudad) {
-        this.id = id;
-        this.nombre = nombre;
-        this.ciudad = ciudad;
-    }
+	public int getId() 
+	{
+		return id;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public void setId(int id) 
+	{
+		this.id = id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+        public int getCiudad() {
+            return ciudad;
+        }
 
-    public String getNombre() {
-        return nombre;
-    }
+        public void setCiudad(int ciudad) {
+            this.ciudad = ciudad;
+        }
+        
+	public String getName() 
+	{
+		return name;
+	}
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+	public void setName(String name) 
+	{
+		this.name = name;
+	}
 
-    public String getCiudad() {
-        return ciudad;
-    }
+	public Double getLatitude() 
+	{
+		return latitude;
+	}
 
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
-    }
-}
+	public void setLatitude(Double latitude) 
+	{
+		this.latitude = latitude;
+	}
 
+	public Double getLongitude() 
+	{
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) 
+	{
+		this.longitude = longitude;
+	}	
+ }
