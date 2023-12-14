@@ -27,7 +27,7 @@ public class ConectionDDBB
 	          {
 	            Context ctx = new InitialContext();
 	            // Get the connection factory configured in Tomcat
-	            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/spgi");
+	            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/ubicomp");
 
 	            // Obtiene una conexion
 	            con = ds.getConnection();
@@ -113,67 +113,47 @@ public class ConectionDDBB
     }   
     
     //************** CALLS TO THE DATABASE ***************************//
-    public static PreparedStatement GetStations(Connection con)
+    public static PreparedStatement GetParkings(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM WHEATHERSTATION.STATION");  	
+    	return getStatement(con,"SELECT * FROM PARKING.PARKING");  	
     }    
-    public static PreparedStatement GetStationsFromCity(Connection con)
+    public static PreparedStatement GetParkingsFromCity(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM WHEATHERSTATION.STATION WHERE CITY_ID=?");  	
+    	return getStatement(con,"SELECT * FROM PARKING.STATION WHERE id_ciudad=?");  	
     } 
     
-    public static PreparedStatement GetStationSensors(Connection con)
+    public static PreparedStatement GetParkingSensors(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM SENSORTYPE LEFT OUTER JOIN STATION_SENSORTYPE ON SENSORTYPE.ID=STATION_SENSORTYPE.SENSORTYPE_ID and STATION_ID=?;");  	
-    }
-    
-    public static PreparedStatement GetStationSensorMeasurementLastDays(Connection con)
-    {
-    	return getStatement(con,"SELECT date(DATE) as date, min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg, dayofweek(DATE) as dayofweek FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY and DATE<=now() group by date(DATE) ORDER BY DATE ASC;");  	
-    }
-    
-    public static PreparedStatement GetStationSensorMeasurementLastMonths(Connection con)
-    {
-    	return getStatement(con,"SELECT month(DATE) as month,min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY group by month(DATE) ORDER BY DATE ASC;");  	
+    	return getStatement(con,"SELECT * FROM PARKING.SENSOR WHERE id_parking=?;");  	
     }
     
     public static PreparedStatement GetCities(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM CITY;");  	
+    	return getStatement(con,"SELECT * FROM ciudad;");  	
     }
     
-    public static PreparedStatement InsertWeatherForecast(Connection con)
-    {
-    	return getStatement(con,"INSERT INTO MEASUREMENT (STATION_ID, SENSORTYPE_ID, DATE, VALUE) VALUES (?,?,?,?) ON duplicate key update STATION_ID=?, SENSORTYPE_ID=?, DATE=?, VALUE=?;");  	
+    public static PreparedStatement InsertMeasurement(Connection con) {
+    return getStatement(con, 
+        "INSERT INTO historico_mediciones (id_sensor, fecha, valor, alerta) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE id_sensor=?, fecha=?, valor=?, alerta=?;");
     }
-    
-    public static PreparedStatement GetStationSensorMeasurementMonth(Connection con)
-    {
-    	return getStatement(con,"SELECT month(DATE) as date,  min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? group by month(DATE) ORDER BY DATE ASC;");  	
-    }
-    
+
     public static PreparedStatement GetLastValueStationSensor(Connection con)
     {
-    	return getStatement(con,"select * from MEASUREMENT where STATION_ID=? AND SENSORTYPE_ID= ? ORDER BY DATE LIMIT 1;");  	
+    	return getStatement(con,"select * from MEASUREMENT where id_parking=? AND id_sensor= ? ORDER BY fecha LIMIT 1;");  	
     }
     
     public static PreparedStatement GetInfoFromStation(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM WHEATHERSTATION.STATION WHERE ID=?;");  	
+    	return getStatement(con,"SELECT * FROM PARKING.SENSOR WHERE id_parking=?;");  	
     }
     
-    public static PreparedStatement InsertnewMeasurement(Connection con)
-    {
-    	return getStatement(con,"INSERT INTO MEASUREMENT (STATION_ID, SENSORTYPE_ID, DATE, VALUE) VALUES (?,?,?,?) ON duplicate key update STATION_ID=?, SENSORTYPE_ID=?, DATE=?, VALUE=?;");  	
-    }
-
     public static PreparedStatement GetDataBD(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM UBICOMP.MEASUREMENT");  	
+    	return getStatement(con,"SELECT * FROM PARKING.historico_mediciones");  	
     }
     
     public static PreparedStatement SetDataBD(Connection con)
     {
-    	return getStatement(con,"INSERT INTO UBICOMP.MEASUREMENT VALUES (?,?)");  	
+    	return getStatement(con,"INSERT INTO PARKING.HISTORICO_MEDICIONES VALUES (?,?)");  	
     }
 }
