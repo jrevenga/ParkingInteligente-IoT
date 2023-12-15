@@ -3,10 +3,12 @@ package logic;
 import java.util.ArrayList;
 
 import db.ChartMeasurements;
-import db.Ciudad;
+import db.City;
 import db.ConectionDDBB;
 import db.SensorType;
-import db.Station;
+import db.Sensor;
+import db.CarHistory;
+import db.Parking;
 import db.Topics;
 
 import java.sql.Connection;
@@ -20,10 +22,11 @@ public class Logic
 {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+
 	/**
 	 * 
 	 * @return The list of all the parkings stored in the db
-	 */
+	
 	public static ArrayList<Parking> getParkingsFromDB()
 	{
 		ArrayList<Parking> parkings = new ArrayList<Parking>();
@@ -68,7 +71,7 @@ public class Logic
 	/**
 	 * 
 	 * @return The list of all the parkings stored in the db of a Ciudad
-	 */
+	
 	public static ArrayList<Parking> getParkingsFromCiudad(int CiudadId)
 	{
 		ArrayList<Parking> parkings = new ArrayList<Parking>();
@@ -114,7 +117,7 @@ public class Logic
 	/**
 	 * 
 	 * @return The list of all the ciudades stored in the db
-	 */
+	
 	public static ArrayList<Ciudad> getCiudadesFromDB()
 	{
 		ArrayList<Ciudad> ciudades = new ArrayList<Ciudad>();
@@ -158,7 +161,7 @@ public class Logic
 	/**
 	 * 
 	 * @return Temperature, Humidity and Gas concentration of the parkings
-	 */
+	
 	public static ArrayList<Clima> getClimasFromDB()
 	{
 		ArrayList<Clima> climas = new ArrayList<Clima>();
@@ -179,7 +182,7 @@ public class Logic
 				clima.setIdParking(rs.getInt("IDPARKING"));
 				clima.setTemperatura(rs.getDouble("TEMPERATURA"));
 				clima.setHumedad(rs.getDouble("HUMEDAD"));
-				clima.setHumoGas(rs.getDouble("HUMOGAS"));
+				clima.setMeasurement(rs.getDouble("Measurement"));
 				clima.setFecha(rs.getDate("FECHA"));
 				climas.add(clima);
 			}	
@@ -207,9 +210,9 @@ public class Logic
 	 * @param idParking ID of the parking to search
 	 * @return Temperature, Humidity and Gas concentration of the parking
 	 */
-	public static ArrayList<Clima> getClimasFromParking(int idParking)
+	public static ArrayList<Measurement> getMonthTempFromParking(int idCiudad, int idParking, int idTipo)
 	{
-		ArrayList<Clima> climas = new ArrayList<Clima>();
+		ArrayList<Measurement> temperaturas = new ArrayList<Measurement>();
 		
 		ConectionDDBB conector = new ConectionDDBB();
 		Connection con = null;
@@ -218,46 +221,48 @@ public class Logic
 			con = conector.obtainConnection(true);
 			Log.log.debug("Database Connected");
 			
-			PreparedStatement ps = ConectionDDBB.GetClimaFromParking(con);
-			ps.setInt(1, idParking);
+			PreparedStatement ps = ConectionDDBB.GetMonthTempFromParking(con);
+			ps.setInt(1, idCiudad);
+			ps.setInt(2, idParking);
+			ps.setInt(3, idTipo);
 			Log.log.info("Query=> {}", ps.toString());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{
-				Clima clima = new Clima();
-				clima.setIdParking(idParking);
-				clima.setTemperatura(rs.getDouble("TEMPERATURA"));
-				clima.setHumedad(rs.getDouble("HUMEDAD"));
-				clima.setHumoGas(rs.getDouble("HUMOGAS"));
-				clima.setFecha(rs.getDate("FECHA"));
-				climas.add(clima);
+				Measurement temp = new Measurement();
+				temp.setSensor(rs.getInt("ID_SENSOR"))
+				temp.setValue(rs.getDouble("VALOR"));
+				temp.setTimestamp(rs.getDate("FECHA"));
+				temp.setAlerta(rs.getInt("ALERTA"));
+				temperaturas.add(temp);
 			}	
 		} catch (SQLException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<Clima>();
+			temperaturas = new ArrayList<Measurement>();
 		} catch (NullPointerException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<Clima>();
+			temperaturas = new ArrayList<Measurement>();
 		} catch (Exception e)
 		{
 			Log.log.error("Error:{}", e);
-			climas = new ArrayList<Clima>();
+			temperaturas = new ArrayList<Measurement>();
 		} finally
 		{
 			conector.closeConnection(con);
 		}
-		return climas;
+		return temperaturas;
 	}
 
 	/**
 	 * 
-	 * @return History of the parkings
+	 * @param idParking ID of the parking to search
+	 * @return Temperature, Humidity and Gas concentration of the parking
 	 */
-	public static ArrayList<Registro> getRegistrosFromDB()
+	public static ArrayList<Measurement> getMonthGasesFromParking(int idCiudad, int idParking, int idTipo)
 	{
-		ArrayList<Registro> registros = new ArrayList<Registro>();
+		ArrayList<Measurement> gases = new ArrayList<Measurement>();
 		
 		ConectionDDBB conector = new ConectionDDBB();
 		Connection con = null;
@@ -266,30 +271,131 @@ public class Logic
 			con = conector.obtainConnection(true);
 			Log.log.debug("Database Connected");
 			
-			PreparedStatement ps = ConectionDDBB.GetRegistrosFromDB(con);
+			PreparedStatement ps = ConectionDDBB.GetMonthGasesFromParking(con);
+			ps.setInt(1, idCiudad);
+			ps.setInt(2, idParking);
+			ps.setInt(3, idTipo);
 			Log.log.info("Query=> {}", ps.toString());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{
-				Registro registro = new Registro();
-				registro.setIdParking(rs.getInt("IDPARKING"));
+				Measurement gas = new Measurement();
+				gas.setSensor(rs.getInt("ID_SENSOR"))
+				gas.setValue(rs.getDouble("VALOR"));
+				gas.setTimestamp(rs.getDate("FECHA"));
+				gas.setAlerta(rs.getInt("ALERTA"))
+				gases.add(gas);
+			}	
+		} catch (SQLException e)
+		{
+			Log.log.error("Error: {}", e);
+			gases = new ArrayList<Measurement>();
+		} catch (NullPointerException e)
+		{
+			Log.log.error("Error: {}", e);
+			gases = new ArrayList<Measurement>();
+		} catch (Exception e)
+		{
+			Log.log.error("Error:{}", e);
+			gases = new ArrayList<Measurement>();
+		} finally
+		{
+			conector.closeConnection(con);
+		}
+		return gases;
+	}
+
+	/**
+	 * 
+	 * @param idParking ID of the parking to search
+	 * @return Temperature, Humidity and Gas concentration of the parking
+	 */
+	public static ArrayList<Measurement> getMonthAlarmsFromParking(int idCiudad, int idParking, int idTipo)
+	{
+		ArrayList<Measurement> alarmas = new ArrayList<Measurement>();
+		
+		ConectionDDBB conector = new ConectionDDBB();
+		Connection con = null;
+		try
+		{
+			con = conector.obtainConnection(true);
+			Log.log.debug("Database Connected");
+			
+			PreparedStatement ps = ConectionDDBB.GetMonthAlarmsFromParking(con);
+			ps.setInt(1, idCiudad);
+			ps.setInt(2, idParking);
+			Log.log.info("Query=> {}", ps.toString());
+			ResultSet rs = ps.executeQuery();
+			while (rs.next())
+			{
+				Measurement alarma = new Measurement();
+				alarma.setSensor(rs.getInt("ID_SENSOR"))
+				alarma.setValue(rs.getDouble("VALOR"));
+				alarma.setTimestamp(rs.getDate("FECHA"));
+				alarma.setAlerta(rs.getInt("ALERTA"))
+				alarmas.add(alarma);
+			}	
+		} catch (SQLException e)
+		{
+			Log.log.error("Error: {}", e);
+			alarmas = new ArrayList<Measurement>();
+		} catch (NullPointerException e)
+		{
+			Log.log.error("Error: {}", e);
+			alarmas = new ArrayList<Measurement>();
+		} catch (Exception e)
+		{
+			Log.log.error("Error:{}", e);
+			alarmas = new ArrayList<Measurement>();
+		} finally
+		{
+			conector.closeConnection(con);
+		}
+		return alarmas;
+	}
+
+	/**
+	 * 
+	 * @param idParking ID of the parking to search
+	 * @return History of the parking
+	 */
+	public static ArrayList<CarHistory> getMonthCarHistoryFromParking(int idCiudad, int idParking)
+	{
+		ArrayList<CarHistory> registros = new ArrayList<CarHistory>();
+		
+		ConectionDDBB conector = new ConectionDDBB();
+		Connection con = null;
+		try
+		{
+			con = conector.obtainConnection(true);
+			Log.log.debug("Database Connected");
+			
+			PreparedStatement ps = ConectionDDBB.GetMonthCarHistoryFromParking(con);
+			ps.setInt(1, idCiudad);
+			ps.setInt(2, idParking);
+			Log.log.info("Query=> {}", ps.toString());
+			ResultSet rs = ps.executeQuery();
+			while (rs.next())
+			{
+				CarHistory registro = new CarHistory();
+				registro.setParking(idParking);
 				registro.setMatricula(rs.getString("MATRICULA"));
-				registro.setFecha(rs.getDate("FECHA"));
-				registro.setIdEvento(rs.getInt("IDEVENTO"));
+				registro.setTimestamp(rs.getDate("FECHA"));
+				registro.setEntrada(rs.getInt("ENTRADA"));
 				registros.add(registro);
 			}	
 		} catch (SQLException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<Registro>();
+			registros = new ArrayList<CarHistory>();
 		} catch (NullPointerException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<Registro>();
+			registros = new ArrayList<CarHistory>();
 		} catch (Exception e)
 		{
 			Log.log.error("Error:{}", e);
-			registros = new ArrayList<Registros>();
+			registros = new ArrayList<CarHistory>();
 		} finally
 		{
 			conector.closeConnection(con);
@@ -302,9 +408,10 @@ public class Logic
 	 * @param idParking ID of the parking to search
 	 * @return History of the parking
 	 */
-	public static ArrayList<Registro> getRegistrosFromParking(int idParking)
+	public static ArrayList<CarHistory> getParkingTimeDayFromParking(int idCiudad, int idParking)
 	{
-		ArrayList<Registro> registros = new ArrayList<Registro>();
+		ArrayList<CarHistory> registros = new ArrayList<CarHistory>();
+		ArrayList<Map<long,CarHistory>> registrosFinales = new ArrayList<Map<long,CarHistory>>();
 		
 		ConectionDDBB conector = new ConectionDDBB();
 		Connection con = null;
@@ -313,42 +420,73 @@ public class Logic
 			con = conector.obtainConnection(true);
 			Log.log.debug("Database Connected");
 			
-			PreparedStatement ps = ConectionDDBB.GetRegistrosFromDB(con);
-			ps.setInt(1, idParking);
+			PreparedStatement ps = ConectionDDBB.GetParkingTimeDayFromParking(con);
+			ps.setInt(1, idCiudad);
+			ps.setInt(2, idParking);
 			Log.log.info("Query=> {}", ps.toString());
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{
-				Registro registro = new Registro();
-				registro.setIdParking(idParking);
-				registro.setMatricula(rs.getString("MATRICULA"));
-				registro.setFecha(rs.getDate("FECHA"));
-				registro.setIdEvento(rs.getInt("IDEVENTO"));
+				String matricula = rs.getString("MATRICULA");
+				Date fecha = rs.getDate("FECHA");
+				int entrada = rs.getInt("ENTRADA");
+
+				// Buscar si ya existe un registro para esta matrícula en la lista
+            	CarHistory registroExistente = buscarRegistro(matricula, registros);
+
+				if(registroExistente != null){
+					Map<long,CarHistory> registroTiempo = new HashMap<>();
+					long difMiliseg = fecha.getTime() - registroExistente.getFecha().getTime();
+					if (entrada == 0) {
+						registroTiempo.put("tiempo",difMiliseg);
+						registroTiempo.put("registro",registroExistente);
+						registrosFinales.add(registroTiempo);
+					} else {
+						registroTiempo.put("tiempo",-difMiliseg);
+						registroTiempo.put("registro",registroExistente);
+						registrosFinales.add(registroTiempo);
+					}
+				}
+
+				CarHistory registro = new CarHistory();
+				registro.setParking(idParking);
+				registro.setMatricula(matricula);
+				registro.setTimestamp(fecha);
+				registro.setEntrada(entrada);
 				registros.add(registro);
 			}	
 		} catch (SQLException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<Registro>();
+			registros = new ArrayList<CarHistory>();
 		} catch (NullPointerException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<Registro>();
+			registros = new ArrayList<CarHistory>();
 		} catch (Exception e)
 		{
 			Log.log.error("Error:{}", e);
-			registros = new ArrayList<Registros>();
+			registros = new ArrayList<CarHistory>();
 		} finally
 		{
 			conector.closeConnection(con);
 		}
-		return registros;
+		return registrosFinales;
 	}
+
+	private static CarHistory buscarRegistro(String matricula, ArrayList<CarHistory> registros) {
+        for (CarHistory registro : registros) {
+            if (registro.getMatricula().equals(matricula)) {
+                return registro;
+            }
+        }
+        return null;
+    }
 
 	/**
 	 * 
 	 * @return History of the parkings
-	 */
+	
 	public static ArrayList<Plaza> getPlazasFromDB()
 	{
 		ArrayList<Plaza> plazas = new ArrayList<Plaza>();
@@ -394,7 +532,7 @@ public class Logic
 	 * 
 	 * @param idParking ID of the parking to search
 	 * @return History of the parking
-	 */
+	
 	public static ArrayList<Plaza> getPlazasFromParking(int idParking)
 	{
 		ArrayList<Plaza> plazas = new ArrayList<Plaza>();
@@ -436,94 +574,6 @@ public class Logic
 		}
 		return plazas;
 	}
-
-	/**
-	 * 
-	 * @return History of the parkings
-	 */
-	public static ArrayList<Evento> getEventosFromDB()
-	{
-		ArrayList<Evento> eventos = new ArrayList<Evento>();
-		
-		ConectionDDBB conector = new ConectionDDBB();
-		Connection con = null;
-		try
-		{
-			con = conector.obtainConnection(true);
-			Log.log.debug("Database Connected");
-			
-			PreparedStatement ps = ConectionDDBB.GetEventosFromDB(con);
-			Log.log.info("Query=> {}", ps.toString());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next())
-			{
-				Evento evento = new Evento();
-				evento.setId(rs.getInt("ID"));
-				evento.setEstado(rs.getString("DESCRIPCION"));
-				eventos.add(evento);
-			}	
-		} catch (SQLException e)
-		{
-			Log.log.error("Error: {}", e);
-			eventos = new ArrayList<Evento>();
-		} catch (NullPointerException e)
-		{
-			Log.log.error("Error: {}", e);
-			eventos = new ArrayList<Evento>();
-		} catch (Exception e)
-		{
-			Log.log.error("Error:{}", e);
-			eventos = new ArrayList<Evento>();
-		} finally
-		{
-			conector.closeConnection(con);
-		}
-		return eventos;
-	}
-
-	/**
-	 * 
-	 * @param idPlaza ID of the place to search
-	 * @return History of the parking
-	 */
-	public static ArrayList<Evento> getEventosFromPlaza(int idPlaza)
-	{
-		ArrayList<Evento> eventos = new ArrayList<Evento>();
-		
-		ConectionDDBB conector = new ConectionDDBB();
-		Connection con = null;
-		try
-		{
-			con = conector.obtainConnection(true);
-			Log.log.debug("Database Connected");
-			
-			PreparedStatement ps = ConectionDDBB.GetEventosFromPlaza(con);
-			ps.setInt(1, idPlaza);
-			Log.log.info("Query=> {}", ps.toString());
-			ResultSet rs = ps.executeQuery();
-			while (rs.next())
-			{
-				Evento evento = new Evento();
-				evento.setId(rs.getInt("ID"));
-				evento.setEstado(rs.getString("DESCRIPCION"));
-				eventos.add(evento);
-			}	
-		} catch (SQLException e)
-		{
-			Log.log.error("Error: {}", e);
-			eventos = new ArrayList<Evento>();
-		} catch (NullPointerException e)
-		{
-			Log.log.error("Error: {}", e);
-			eventos = new ArrayList<Evento>();
-		} catch (Exception e)
-		{
-			Log.log.error("Error:{}", e);
-			eventos = new ArrayList<Evento>();
-		} finally
-		{
-			conector.closeConnection(con);
-		}
-		return eventos;
-	}
+	/** */
 }
+
