@@ -113,6 +113,44 @@ public class ConectionDDBB
     }   
     
     //************** CALLS TO THE DATABASE ***************************//
+    public static PreparedStatement GetMonthTempFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM Measurement
+                              JOIN Sensor ON Measurement.sensor = Sensor.id
+                              JOIN Parking ON Sensor.parking = Parking.id
+                              JOIN City ON Parking.ciudad = City.id
+                              WHERE Sensor.tipo = 'temperatura' AND City.id = ? AND Parking.id = ? AND Measurement.timestamp >= NOW() - INTERVAL 30 DAY;");  	
+    }  
+    public static PreparedStatement GetMonthGasesFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM Measurement
+                              JOIN Sensor ON Measurement.sensor = Sensor.id
+                              JOIN Parking ON Sensor.parking = Parking.id
+                              JOIN City ON Parking.ciudad = City.id
+                              WHERE Sensor.tipo = 'gas' AND City.id = ? AND Parking.id = ? AND Measurement.timestamp >= NOW() - INTERVAL 30 DAY;");  	
+    }  
+    public static PreparedStatement GetMonthAlarmsFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM Measurement
+                              JOIN Sensor ON Measurement.sensor = Sensor.id
+                              JOIN Parking ON Sensor.parking = Parking.id
+                              JOIN City ON Parking.ciudad = City.id
+                              WHERE Measurement.alerta = true AND City.id = ? AND Parking.id = ? AND Measurement.timestamp >= NOW() - INTERVAL 30 DAY;");  	
+    }  
+    public static PreparedStatement GetMonthCarHistoryFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM CarHistory
+                              JOIN Parking ON CarHistory.parking = Parking.id
+                              JOIN City ON Parking.ciudad = City.id
+                              WHERE City.id = ? AND Parking.id = ? AND CarHistory.timestamp >= NOW() - INTERVAL 30 DAY;");  	
+    }  
+    public static PreparedStatement GetParkingTimeDayFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM CarHistory
+                              JOIN Parking ON CarHistory.parking = Parking.id
+                              JOIN City ON Parking.ciudad = City.id
+                              WHERE City.id = ? AND Parking.id = ? AND DATE(CarHistory.timestamp) = CURRENT_DATE;");  	
+    }  
     public static PreparedStatement GetParkings(Connection con)
     {
     	return getStatement(con,"SELECT * FROM PARKING.PARKING");  	
