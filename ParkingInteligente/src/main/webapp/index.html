@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Parking Inteligente</title>
+        <link rel="stylesheet" href="style.css"/>     
+    
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src = "general.js"></script>
+        <script src="conexion.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    </head>
+    <body>
+        <div class = "cabecera" style="text-align: center;">
+            <div class="info">
+                <span id="fechaHora"></span>
+            </div>
+            <div class="infoBarra"></div>
+            <div class="tituloBarra"></div>
+            <img src = "./img/logo.png" alt="logo" width="50" height="50" /> 
+            <div class="pageTitle">Parking Inteligente </div>         
+            <div class="botones">
+                <div class="boton-desplegable">
+                    <button id="btnSede">Sede</button>
+                    <div class="desplegable">
+                        <button id="btnMadrid">Madrid-ParkRetiro</button>
+                        <button id="btnBarcelona">Barcelona</button>                     
+                    </div>
+                </div>
+                <button id="btnSoporte">Soporte Técnico</button>
+            </div>
+        </div>        
+        <div class="sedeSeleccionada" id="sedeSeleccionada">
+                <button id="btnGranVia">Parking Gran Via</button>
+                <button id="btnRetiro">Parking Retiro</button>
+        </div>
+        <div class="contenido">
+            <div class="columna izquierda">
+                <div class="tituloIzquierda">Estadisticas</div>
+                <ul class="estadisticas">
+                    <li><button id="botonEstadistica1" onclick> Temperatura    </button></li>
+                    <li><button id="botonEstadistica2" onclick> Ocupacion      </button></li>
+                    <li><button id="botonEstadistica3" onclick> Humo           </button></li>
+                    <li><button id="botonEstadistica4" onclick> Humedad        </button></li>
+                    <li><button id="botonEstadistica5" onclick> Seguridad      </button></li>
+                    <li><button id="botonEstadistica6" onclick> Aparcamiento   </button></li>
+                </ul>
+            </div>
+            <div class="columna central">
+                <div class="tituloCentral"></div>
+                <canvas id="myChart" width="400" height="200"></canvas>
+                <div class="descripcion"></div>
+            </div>
+            <div class="columna derecha">
+                <div class="tituloDerecha">Estado Actual</div>
+                
+                <ul class="sensores">
+                    <li>Plazas Disponibles: 4</li>
+                    <li>Sensor de Temperatura: 25ºC</li>
+                    <li>Sensor de Humedad: 20% </li>
+                    <li>Sensor de Humo: 30ppm</li>
+                </ul>
+                <div class="matriculasHoy">
+                    <textarea id="areaMatriculas" readonly>
+                    ABC-123
+                    XYZ-789
+                    DEF-456
+                    GHI-789
+                    JKL-012
+                    ABC-123
+                    XYZ-789
+                    DEF-456
+                    GHI-789
+                    JKL-012
+                    ABC-123
+                    XYZ-789
+                    DEF-456
+                    GHI-789
+                    JKL-012
+                    ABC-123
+                    XYZ-789
+                    DEF-456
+                    GHI-789
+                    JKL-012
+                    ABC-123
+                    XYZ-789
+                    DEF-456
+                    GHI-789
+                    JKL-012
+                    ABC-123
+                    XYZ-789
+                    DEF-456
+                    GHI-789
+                    JKL-012
+                    </textarea>
+                </div>
+            </div>
+        </div>
+        <div class="pieDePagina">
+            <p>Laboratorio Ubicua</p>
+            <p>Integrantes: </p>
+            <p> Esteban Gómez García</p>
+            <p> Jorge Revenga Martín de Vidales</p>
+            <p> Adrían García Sobrino</p>
+            <p> Ángel Salgado Aldao</p>
+        </div>      
+    </body>
+</html>
+
+ 
+
+
