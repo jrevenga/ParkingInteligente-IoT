@@ -37,22 +37,22 @@ public class MQTTSuscriber implements MqttCallback
 				String topicCity = "City" + rsCity.getInt("ID");
 				topics.add("City" + rsCity.getInt("ID"));
 				
-				//Get stations of the city
-				PreparedStatement psStations = ConectionDDBB.GetParkingsFromCity(con);
-				psStations.setInt(1, rsCity.getInt("ID"));
-				Log.logmqtt.debug("Query to search stations=> {}", psStations.toString());
-				ResultSet rsStations = psStations.executeQuery();
-				while (rsStations.next()){
-					String topicStation = topicCity + "/Station" + rsStations.getInt("ID");
-					topics.add(topicStation);
+				//Get parkings of the city
+				PreparedStatement psParkings = ConectionDDBB.GetParkingsFromCity(con);
+				psParkings.setInt(1, rsCity.getInt("ID"));
+				Log.logmqtt.debug("Query to search parkings=> {}", psParkings.toString());
+				ResultSet rsParkings = psParkings.executeQuery();
+				while (rsParkings.next()){
+					String topicParking = topicCity + "/Parking" + rsParkings.getInt("ID");
+					topics.add(topicParking);
 					
-					//Get sensors form station
+					//Get sensors form parkings
 					PreparedStatement psSensors = ConectionDDBB.GetParkingSensors(con);
-					psSensors.setInt(1, rsStations.getInt("ID"));
+					psSensors.setInt(1, rsParkings.getInt("ID"));
 					Log.logmqtt.debug("Query to search sensors=> {}", psSensors.toString());
 					ResultSet rsSensors = psSensors.executeQuery();
 					while (rsSensors.next()){
-						String topicSensor = topicStation + "/Sensor" + rsSensors.getInt("ID");
+						String topicSensor = topicParking + "/Sensor" + rsSensors.getInt("ID");
 						topics.add(topicSensor);
 					}
 				}
@@ -109,21 +109,21 @@ public class MQTTSuscriber implements MqttCallback
        if(topic.contains("Sensor"))
        {
 		   newTopic.setIdCity(topics[0].replace("City", ""));
-		   newTopic.setIdStation(topics[1].replace("Station", ""));
+		   newTopic.setIdParking(topics[1].replace("Parking", ""));
 		   newTopic.setIdSensor(topics[2].replace("Sensor", ""));
-    	   Log.logmqtt.info("Mensaje from city{}, station{} sensor{}: {}", 
-    			   newTopic.getIdCity(), newTopic.getIdStation(), newTopic.getIdSensor(), message.toString());
+    	   Log.logmqtt.info("Mensaje from city{}, parking{} sensor{}: {}", 
+    			   newTopic.getIdCity(), newTopic.getIdParking(), newTopic.getIdSensor(), message.toString());
     	   
     	   //Store the information of the sensor
-    	   //Logic.storeNewMeasurement(newTopic);
+    	   Logic.storeNewMeasurement(newTopic);
        }else
        {
-    	   if(topic.contains("Station"))
+    	   if(topic.contains("Parking"))
     	   {
     		   newTopic.setIdCity(topics[0].replace("City", ""));
-    		   newTopic.setIdStation(topics[1].replace("Station", ""));
-        	   Log.logmqtt.info("Mensaje from city{}, station{}: {}", 
-        			   newTopic.getIdCity(), newTopic.getIdStation(), message.toString());
+    		   newTopic.setIdParking(topics[1].replace("Parking", ""));
+        	   Log.logmqtt.info("Mensaje from city{}, parking{}: {}", 
+        			   newTopic.getIdCity(), newTopic.getIdParking(), message.toString());
     	   }else
     	   {
     		   if(topic.contains("City"))

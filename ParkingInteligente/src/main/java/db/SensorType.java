@@ -5,8 +5,8 @@ public class SensorType
     private int id;
     private String name;
     private String units;
-    private double minvalue;
-    private double maxvalue;
+    private double valuemin;
+    private double valuemax;
     
     
     // constructors
@@ -15,16 +15,16 @@ public class SensorType
     	this.id = 0;
     	this.name = null;
     	this.units = null;
-        this.minvalue = 0;
-        this.maxvalue = 999;
+        this.valuemin = 0;
+        this.valuemax = 999;
     }
     public SensorType(int id, String name, String units, int value, double minvalue, double maxvalue) 
     {
     	this.id = id;
     	this.name = name;
     	this.units = units;
-        this.minvalue = minvalue;
-        this.maxvalue = maxvalue;
+        this.valuemin = minvalue;
+        this.valuemax = maxvalue;
     }
 
 	public int getId() {
@@ -52,19 +52,19 @@ public class SensorType
 	}
 
         public double getMinvalue() {
-            return minvalue;
+            return valuemin;
         }
 
         public void setMinvalue(double minvalue) {
-            this.minvalue = minvalue;
+            this.valuemin = minvalue;
         }
 
         public double getMaxvalue() {
-            return maxvalue;
+            return valuemax;
         }
 
         public void setMaxvalue(double maxvalue) {
-            this.maxvalue = maxvalue;
+            this.valuemax = maxvalue;
         }
         
         

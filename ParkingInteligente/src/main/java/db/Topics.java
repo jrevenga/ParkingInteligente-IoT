@@ -4,7 +4,7 @@ public class Topics
 {
     private String idTopic;
     private String idCity;
-    private String idStation;
+    private String idParking;
     private String idSensor;
     private String idAlert;
     private String value;
@@ -14,7 +14,7 @@ public class Topics
     {
     	this.idTopic = null;
     	this.idCity = null;
-    	this.idStation = null;
+    	this.idParking = null;
     	this.idSensor = null;
     	this.idAlert = null;
     	this.setValue(null);
@@ -23,7 +23,7 @@ public class Topics
     {
     	this.idTopic = idTopic;
     	this.idCity = idCity;
-    	this.idStation = idStation;
+    	this.idParking = idStation;
     	this.idSensor = idSensor;
     	this.idAlert = idAlert;
     	this.setValue(value);
@@ -45,12 +45,12 @@ public class Topics
 		this.idCity = idCity;
 	}
 
-	public String getIdStation() {
-		return idStation;
+	public String getIdParking() {
+		return idParking;
 	}
 
-	public void setIdStation(String idStation) {
-		this.idStation = idStation;
+	public void setIdParking(String idParking) {
+		this.idParking = idParking;
 	}
 
 	public String getIdSensor() {

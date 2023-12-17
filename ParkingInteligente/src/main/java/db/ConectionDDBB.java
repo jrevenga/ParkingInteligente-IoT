@@ -192,4 +192,9 @@ public class ConectionDDBB
     	return getStatement(con,"SELECT * FROM Measurement JOIN Sensor ON Measurement.sensor = Sensor.id JOIN Parking ON Sensor.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE Sensor.tipo = 1 AND City.id = ? AND Parking.id = ? AND Measurement.timestamp = CURRENT_TIMESTAMP;");  	
     }
     
+    public static PreparedStatement InsertnewMeasurement(Connection con)
+    {
+        corregir
+    	return getStatement(con,"INSERT INTO Measurement (STATION_ID, SENSORTYPE_ID, DATE, VALUE) VALUES (?,?,?,?) ON duplicate key update STATION_ID=?, SENSORTYPE_ID=?, DATE=?, VALUE=?;"); 
+    }
 }
