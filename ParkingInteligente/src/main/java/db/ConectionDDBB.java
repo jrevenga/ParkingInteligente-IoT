@@ -197,6 +197,6 @@ public class ConectionDDBB
     public static PreparedStatement InsertnewMeasurement(Connection con)
     {
         corregir
-    	return getStatement(con,"INSERT INTO Measurement (STATION_ID, SENSORTYPE_ID, DATE, VALUE) VALUES (?,?,?,?) ON duplicate key update STATION_ID=?, SENSORTYPE_ID=?, DATE=?, VALUE=?;"); 
+    	return getStatement(con,"INSERT INTO historico_mediciones (id_sensor,fecha,valor,alerta) VALUES (?,?,?,?) ON duplicate key update id_sensor=?, fecha=?, valor=?, alerta=?;"); 
     }
 }
