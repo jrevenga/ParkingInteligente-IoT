@@ -1,0 +1,346 @@
+/*body*/ 
+body {
+    background-color: rgb(29, 28, 28);
+    margin: 0; /* Elimina el margen predeterminado del body */
+    padding: 0; /* Elimina el relleno predeterminado del body */
+    overflow-x: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: url(./img/fondoMadera.jpg);
+}
+
+/*cabecera*/
+.cabecera {
+    background-color: rgb(29, 28, 28); /* Fondo con opacidad */
+    padding: 15px 20px; /* Espaciado interno */
+    text-align: center; /* Centra el contenido */
+    position: relative;
+    border-bottom: 1px solid #fff; /* Añade un borde inferior blanco de 2 píxeles */
+    z-index: 1;
+}
+
+.pageTitle {
+    font-weight: bold;
+    font-size: 30px;
+    text-align: left;
+    color: white;
+    margin-left: 50px;
+}
+
+.cabecera img {
+    position: absolute; /* Añade posición absoluta */
+    top: 50%; /* Centra verticalmente en relación con el contenedor padre */
+    left: 20px; /* Ajusta la posición desde el borde izquierdo */
+    transform: translateY(-50%); /* Ajusta para centrar verticalmente */
+    width: 40px; /* Ajusta el tamaño del logo según tus necesidades */
+    height: 40px;
+}
+
+.info {
+    position: absolute; /* Añade posición absoluta */
+    top: 50%; /* Centra verticalmente en relación con el contenedor padre */
+    right: 40px; /* Ajusta la posición desde el borde derecho */
+    transform: translateY(-50%); /* Ajusta para centrar verticalmente */
+    color: white;
+}
+
+.infoBarra{
+    position: absolute; /* Añade posición absoluta */
+    top: 50%; /* Centra verticalmente en relación con el contenedor padre */
+    right: 338px; /* Ajusta la posición desde el borde izquierdo */
+    height: 80%; /* Ocupa toda la altura del contenedor */
+    width: 1px; /* Ajusta el ancho de la barra vertical según tus necesidades */
+    background-color: white; /* Color de la barra vertical */
+    transform: translateY(-50%); /* Ajusta para centrar verticalmente */
+}
+
+.tituloBarra{
+    position: absolute; /* Añade posición absoluta */
+    top: 50%; /* Centra verticalmente en relación con el contenedor padre */
+    left: 338px; /* Ajusta la posición desde el borde izquierdo */
+    height: 80%; /* Ocupa toda la altura del contenedor */
+    width: 1px; /* Ajusta el ancho de la barra vertical según tus necesidades */
+    background-color: white; /* Color de la barra vertical */
+    transform: translateY(-50%); /* Ajusta para centrar verticalmente */
+}
+
+.botones {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+}
+
+.botones button {
+    margin: 0 10px; /* Espacio entre los botones */
+    padding: 10px 20px; /* Ajusta según sea necesario */
+    background-color: transparent; /* Sin fondo */
+    border: none; /* Sin borde */
+    color: rgb(198, 188, 188); /* Color del texto */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: color 0.3s ease; /* Transición suave del color */
+}
+
+.botones button:hover {
+    color: #fff; /* Color blanco puro al pasar el ratón */
+    font-size: 110%; /* Ajusta el tamaño de la fuente al pasar el ratón */
+}
+
+/*desplegable de sede*/
+.desplegable {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgb(57, 55, 55);
+    min-width: 140px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border: 1px solid black; /* Añade bordes negros */
+    z-index: 2;
+}
+
+.desplegable button {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    color: rgb(190, 188, 188);
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.desplegable button:last-child {
+    border-bottom: none; /* No aplicar el borde inferior al último botón */
+}
+
+.desplegable button:hover {
+    color: #fff;
+    font-size: 120%; /* Ajusta el tamaño de la fuente al pasar el ratón */
+}
+
+/*sede seleccionada*/
+.sedeSeleccionada {
+    display: none;
+    background-color: rgb(29, 28, 28); /* Color gris */
+    width: 80%; /* Ancho igual a la cabecera */
+    padding: 12px 15px; /* Espaciado interno */
+    text-align: center; /* Centra el contenido */
+    max-width: 1200px; /* Ancho máximo de la caja desplegada */
+    margin: auto; /* Centra la caja en la pantalla y agrega un margen */
+    color: white;
+    font-size: 25px;
+    clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 10% 100%);
+    z-index: 1;
+
+
+}
+
+/*desplegable parking*/
+.desplegable-parking {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%; /* Alinea el desplegable a la derecha del botón Barcelona */
+    background-color: rgb(57, 55, 55);
+    min-width: 140px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    border: 1px solid black;
+}
+
+.desplegable-parking button {
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    color: rgb(190, 188, 188);
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.desplegable-parking button:last-child {
+    border-bottom: none;
+}
+
+.desplegable-parking button:hover {
+    color: #fff;
+    font-size: 120%;
+}
+
+
+/*contenido*/
+.contenido {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.columna{
+    transition: width 1s ease;
+}
+
+.columna.izquierda {
+    position: relative;
+    width: 0px; /* Ancho del trapecio 450 */
+    height: 900px; /* Altura del trapecio */
+    background-color: rgb(29, 28, 28); /* Color de fondo */
+    clip-path: polygon(54% 0, 100% 11%, 100% 100%, 0 100%, 0 0);
+    margin-top: 20px;
+    border-right: 1px solid white;
+    border-top: 1px solid white;
+}
+
+.tituloIzquierda{
+    color:white;
+    margin-left: 50px;
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+.tituloDerecha{
+    color:white;
+    margin-left: 250px;
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+.columna.derecha {
+    position: relative;
+    margin-left: auto;
+    margin-right: 0;
+    width: 0px; /* Ancho del trapecio 450 */
+    height: 900px; /* Altura del trapecio */
+    background-color: rgb(29, 28, 28); /* Color de fondo */
+    clip-path: polygon(46% 0, 0 11%, 0 100%, 100% 100%, 100% 0);
+    color: white;
+    text-align: left;
+    margin-top: 20px;
+    border-left: 1px solid white;
+    border-top: 1px solid white;
+}
+
+.columna.central{
+    position: relative;
+    margin-left: auto;
+    margin-right: 0;
+    background-color: rgb(29, 28, 28); /* Color de fondo */
+    color: white;
+    text-align: left;
+    width: 0px;
+    height: 0px;
+    margin-top: 70px;
+    clip-path: polygon(8% 0, 91% 0, 100% 10%, 100% 91%, 93% 100%, 8% 100%, 0 92%, 0 11%);
+}
+
+/* Agrega la clase "visible" cuando quieras mostrar las columnas */
+.columna.visible {
+    width: 450px; /* Ancho final */
+}
+
+.columna.central.visible{
+    width: 850px;
+    height: 650px;
+    padding: 50px;
+}
+
+.columna.novisible{
+    width: 0px;
+}
+
+.columna.central.novisible{
+    width: 0px;
+    height: 0px;
+    padding: 0px;
+}
+
+/* pie de pagina */
+.pieDePagina{
+    background-color: rgb(29, 28, 28); /* Fondo con opacidad */
+    padding: 15px 20px; /* Espaciado interno */
+    text-align: center; /* Centra el contenido */
+    position: relative;
+    border-top: 1px solid #fff; /* Añade un borde inferior blanco de 2 píxeles */
+    z-index: 1;
+    color:white;
+}
+
+/*estadisticas*/
+
+.estadisticas button{
+    margin: 15px; /* Espacio entre los botones */
+    padding: 20px 110px; /* Ajusta según sea necesario */
+    background-color: transparent; /* Sin fondo */
+    color: rgb(0, 0, 0); /* Color del texto */
+    cursor: pointer; /* Cambia el cursor al pasar por encima */
+    transition: color 0.3s ease; /* Transición suave del color */
+    clip-path: polygon(0 0, 89% 0, 100% 26%, 100% 100%, 0 100%, 0 61%, 11% 61%, 11% 49%, 0 49%);
+    background-color: white;
+    margin-left: 70px;
+    margin-top: 30px;
+    border: 3px solid black;
+    width: 300px;
+}
+
+.estadisticas{ /*quitar los indices de los botones*/
+    list-style: none;
+    padding: 0;
+    margin: 10px ;
+}
+
+.estadisticas button:hover {
+    font-size: 110%; /* Ajusta el tamaño de la fuente al pasar el ratón */
+}
+
+.enfocado {
+    transform: scale(1.2); /* Escala el botón al 120% del tamaño original */
+    transition: transform 0.3s ease; /* Transición suave de la escala en 0.3 segundos */
+}
+
+/*estado actual*/
+.matriculasHoy{
+    margin-right: 60px;
+    margin-left:  70PX;
+    margin-top: 60PX;
+
+}
+
+#areaMatriculas {
+    width: 100%; /* O ajusta según sea necesario */
+    height: 300px;
+    resize: none;
+    box-sizing: border-box; /* Asegura que el padding no afecte el tamaño total */
+    border: 3px solid black;
+}
+
+.sensores{
+    list-style: none;
+    padding: 0;
+    margin: 10px;
+    color:white;
+    margin: 100px;   
+}
+
+.sensores li{
+    line-height: 3;
+}
+
+/*grafica central*/
+.columna.central {
+    text-align: center;
+}
+
+#myChart {
+    #myChart {
+    max-width: 80%; /* Ajusta el ancho según tus necesidades */
+    margin: 0 auto; /* Centra la gráfica horizontalmente */
+    }
+}
+
+
+
+
+
+
