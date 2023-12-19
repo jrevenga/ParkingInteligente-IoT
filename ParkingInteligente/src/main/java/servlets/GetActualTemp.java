@@ -41,13 +41,10 @@ public class GetActualTemp extends HttpServlet {
 		{
 			int idCiudad = Integer.parseInt(request.getParameter("idCiudad"));
 			int idParking = Integer.parseInt(request.getParameter("idParking"));
-			int idTipo = Integer.parseInt(request.getParameter("idTipo"));	
 			Log.log.info("idCiudad= "+idCiudad);
 			Log.log.info("idParking= "+idParking);
-			Log.log.info("idTipo= "+idTipo);
 
-			//ArrayList<Measurement> values = Logic.getMonthTempFromParking(idCiudad,idParking,idTipo);
-                        ArrayList<Measurement> values =Logic.getActualTempFromParking(idCiudad,idParking,idTipo);
+                        ArrayList<Measurement> values =Logic.getActualTempFromParking(idCiudad,idParking);
 			String jsonTemperaturas = new Gson().toJson(values);
 			Log.log.info("JSON Values=> {}", jsonTemperaturas);
 			out.println(jsonTemperaturas);
