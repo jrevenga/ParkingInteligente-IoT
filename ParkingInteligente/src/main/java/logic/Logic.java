@@ -469,11 +469,11 @@ public class Logic
 	        	Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			ps.setString(2, sdf.format(timestamp));
 			ps.setString(3, newTopic.getValue());
-			ps.setString(4, newTopic.getAlarm());
+			ps.setString(4, newTopic.getAlert());
 			ps.setString(5, newTopic.getIdSensor());
 			ps.setString(6, sdf.format(timestamp));
 			ps.setString(7, newTopic.getValue());
-			ps.setString(8, newTopic.getAlarm());
+			ps.setString(8, newTopic.getAlert());
 			Log.log.info("Query to store Measurement=> {}", ps.toString());
 			ps.executeUpdate();
 		} catch (SQLException e)
