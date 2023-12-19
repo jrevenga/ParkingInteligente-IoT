@@ -40,12 +40,10 @@ public class GetActualGases extends HttpServlet {
 		{
 			int idCiudad = Integer.parseInt(request.getParameter("idCiudad"));
 			int idParking = Integer.parseInt(request.getParameter("idParking"));
-			int idTipo = Integer.parseInt(request.getParameter("idTipo"));	
 			Log.log.info("idCiudad= "+idCiudad);
 			Log.log.info("idParking= "+idParking);
-			Log.log.info("idTipo= "+idTipo);
 			
-			ArrayList<Measurement> values =Logic.getActualGasesFromParking(idCiudad,idParking,idTipo);
+			ArrayList<Measurement> values =Logic.getActualGasesFromParking(idCiudad,idParking);
 			String jsonGases = new Gson().toJson(values);
 			Log.log.info("JSON Sensors Values=> {}", jsonGases);
 			out.println(jsonGases);
