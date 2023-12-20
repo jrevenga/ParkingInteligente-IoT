@@ -1,6 +1,5 @@
-
+var myChart
 document.addEventListener('DOMContentLoaded', function() {
-	var myChart;
     //cabecera
     actualizarFechaHora();
     setInterval(actualizarFechaHora, 1000); // Actualizar cada segundo
@@ -283,6 +282,13 @@ function grafica5(){
             if (myChart) {
                 myChart.destroy();
             }
+            var canvasElement = document.createElement('canvas');
+            canvasElement.id = 'myChart';
+            canvasElement.width = 800;
+            canvasElement.height = 400;
+            var chartContainer = document.getElementById('chartContainer');
+            chartContainer.innerHTML = ''; // Limpiar cualquier contenido existente
+            chartContainer.appendChild(canvasElement);
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -337,6 +343,13 @@ function grafica4(){
             if (myChart) {
                 myChart.destroy();
             }
+            var canvasElement = document.createElement('canvas');
+            canvasElement.id = 'myChart';
+            canvasElement.width = 800;
+            canvasElement.height = 400;
+            var chartContainer = document.getElementById('chartContainer');
+            chartContainer.innerHTML = ''; // Limpiar cualquier contenido existente
+            chartContainer.appendChild(canvasElement);
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -387,11 +400,19 @@ function grafica3(){
         type: 'post',
         
         success: function(data) {
+			
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
             if (myChart) {
                 myChart.destroy();
             }
+            var canvasElement = document.createElement('canvas');
+            canvasElement.id = 'myChart';
+            canvasElement.width = 800;
+            canvasElement.height = 400;
+            var chartContainer = document.getElementById('chartContainer');
+            chartContainer.innerHTML = ''; // Limpiar cualquier contenido existente
+            chartContainer.appendChild(canvasElement);
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -439,11 +460,19 @@ function grafica2(){
         type: 'post',
         
         success: function(data) {
+			
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
             if (myChart) {
                 myChart.destroy();
             }
+            var canvasElement = document.createElement('canvas');
+            canvasElement.id = 'myChart';
+            canvasElement.width = 800;
+            canvasElement.height = 400;
+            var chartContainer = document.getElementById('chartContainer');
+            chartContainer.innerHTML = ''; // Limpiar cualquier contenido existente
+            chartContainer.appendChild(canvasElement);
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -495,9 +524,16 @@ function grafica1(){
         success: function(data) {
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
-            if (myChart) {
+            if (myChart != null) {
                 myChart.destroy();
             }
+            var canvasElement = document.createElement('canvas');
+            canvasElement.id = 'myChart';
+            canvasElement.width = 800;
+            canvasElement.height = 400;
+            var chartContainer = document.getElementById('chartContainer');
+            chartContainer.innerHTML = ''; // Limpiar cualquier contenido existente
+            chartContainer.appendChild(canvasElement);
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
