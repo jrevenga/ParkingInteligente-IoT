@@ -21,7 +21,7 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
   Serial.print(content);
   Serial.println(); 
   */
-  if (strcmp(topic, "parking/matricula/entrada") == 0) {
+  if (strcmp(topic, "Ciudad1/Parking1/Entrada") == 0) {
     message = "";
     for (int i = 0; i < length; i++) {
       message += (char)payload[i];
@@ -38,7 +38,7 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
       delay(1000);
   }
 
-  if (strcmp(topic, "parking/matricula/salida") == 0) {
+  if (strcmp(topic, "Ciudad1/Parking1/Salida") == 0) {
     message = "";
     for (int i = 0; i < length; i++) {
       message += (char)payload[i];
@@ -55,28 +55,28 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
       delay(1000);
   }
 
-  if (strcmp(topic, "parking/humo") == 0) {
+  if (strcmp(topic, "Ciudad1/Parking1/Sensor3") == 0) {
     alarma = "";
     for (int i = 0; i < length; i++) {
       alarma += (char)payload[i];
     }
   }
 
-  if (strcmp(topic, "parking/plazasLibres") == 0) {
+  if (strcmp(topic, "Ciudad1/Parking1/PlazasLibres") == 0) {
     nPlazas = "";
     for (size_t i = 0; i < length; i++) {
       nPlazas += (char)payload[i];
     }
   }
 
-  if (strcmp(topic, "parking/temperatura") == 0) {
+  if (strcmp(topic, "Ciudad1/Parking1/Sensor1") == 0) {
     temp = "";
     for (size_t i = 0; i < length; i++) {
       temp += (char)payload[i];
     }
   }
 
-  if (strcmp(topic, "parking/humedad") == 0) {
+  if (strcmp(topic, "Ciudad1/Parking1/Sensor2") == 0) {
     hum = "";
     for (size_t i = 0; i < length; i++) {
       hum += (char)payload[i];
@@ -84,7 +84,7 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
   }
 
   // Mostrar datos en la pantalla LCD
-  if (alarma == "on") {
+  if (alarma.toInt() > 2800) {
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("ALARMA");
@@ -102,7 +102,7 @@ void OnMqttReceived(char* topic, byte* payload, unsigned int length) {
     tone(pinZumbador, 800, 0);
     delay(1200);
     noTone(pinZumbador);
-    alarma = "off";
+    alarma = "";
   } else {
     lcd.clear();
     lcd.setCursor(0, 0);

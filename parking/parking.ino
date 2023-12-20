@@ -53,14 +53,14 @@ void loop() {
               if (plazasLibres > 0 && smokeValue < 2800){
                 plazasLibres --;
                 mqttClient.publish("Ciudad1/Parking1/PlazasLibres", String(plazasLibres).c_str());
-                mqttClient.publish("Ciudad1/Parking1/entrada", matricula.c_str());
+                mqttClient.publish("Ciudad1/Parking1/Entrada", matricula.c_str());
               }
             } else if (direccion == "salida") {
               if (plazasLibres < capacidad){
                 plazasLibres ++;
-                mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
+                mqttClient.publish("Ciudad1/Parking1/PlazasLibres", String(plazasLibres).c_str());
               }
-              mqttClient.publish("parking/matricula/salida", matricula.c_str());
+              mqttClient.publish("Ciudad1/Parking1/Salida", matricula.c_str());
             }
         }
     }
@@ -130,28 +130,25 @@ void loop() {
 
   if (n % 20 == 0){
     //Subir el topic del estado del estacionamiento
-    mqttClient.publish("parking/plazas/1", msg1.c_str());
-    mqttClient.publish("parking/plazas/2", msg2.c_str());
-    mqttClient.publish("parking/plazas/3", msg3.c_str());
+    mqttClient.publish("Ciudad1/Parking1/Plaza1", msg1.c_str());
+    mqttClient.publish("Ciudad1/Parking1/Plaza2", msg2.c_str());
+    mqttClient.publish("Ciudad1/Parking1/Plaza3", msg3.c_str());
   }
   
   if (n % 40 == 0){
     //Medir temperatura, humedad y humo
     float temperatura = dht.readTemperature();
-    mqttClient.publish("parking/temperatura", String(temperatura).c_str());
+    mqttClient.publish("Ciudad1/Parking1/Sensor1", String(temperatura).c_str());
 
     int humedad = dht.readHumidity();
-    mqttClient.publish("parking/humedad", String(humedad).c_str());
+    mqttClient.publish("Ciudad1/Parking1/Sensor2", String(humedad).c_str());
+
+    smokeValue = analogRead(smokeSensorPin);
+    mqttClient.publish("Ciudad1/Parking1/Sensor3", String(smokeValue).c_str());
   }
 
   if (n == 0){
-    mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
-  }
-
-  smokeValue = analogRead(smokeSensorPin);
-  if (smokeValue > 2800) {
-    // Si se detecta humo, manda mensaje para activar la alarma
-    mqttClient.publish("parking/humo", String("on").c_str());
+    mqttClient.publish("Ciudad1/Parking1/PlazasLibres", String(plazasLibres).c_str());
   }
   
   n++;
