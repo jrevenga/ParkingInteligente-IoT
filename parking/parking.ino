@@ -142,15 +142,21 @@ void loop() {
 
     int humedad = dht.readHumidity();
     mqttClient.publish("Ciudad1/Parking1/Sensor2", String(humedad).c_str());
+  }
 
-    smokeValue = analogRead(smokeSensorPin);
+  smokeValue = analogRead(smokeSensorPin);
+  if (smokeValue > 2800){
     mqttClient.publish("Ciudad1/Parking1/Sensor3", String(smokeValue).c_str());
+  } else{
+    if (n % 40 == 0){
+      mqttClient.publish("Ciudad1/Parking1/Sensor3", String(smokeValue).c_str());
+    }
   }
 
   if (n == 0){
     mqttClient.publish("Ciudad1/Parking1/PlazasLibres", String(plazasLibres).c_str());
   }
-  
+
   n++;
   delay(500);
 }

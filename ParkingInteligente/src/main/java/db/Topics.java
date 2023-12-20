@@ -6,9 +6,7 @@ public class Topics
     private String idCity;
     private String idParking;
     private String idSensor;
-    private String idAlert;
     private String value;
-    private String falso = "0";
  
     // constructors
     public Topics() 
@@ -17,7 +15,6 @@ public class Topics
     	this.idCity = null;
     	this.idParking = null;
     	this.idSensor = null;
-    	this.idAlert = null;
     	this.setValue(null);
     }
     public Topics(String idTopic, String idCity, String idParking, String idSensor, String idAlert, String value) 
@@ -26,7 +23,6 @@ public class Topics
     	this.idCity = idCity;
     	this.idParking = idParking;
     	this.idSensor = idSensor;
-    	this.idAlert = idAlert;
     	this.setValue(value);
     }
 
@@ -63,16 +59,13 @@ public class Topics
 	}
 
 	public String getIdAlert() {
-		if (idAlert == null) {
-			return falso;
+		if (Double.parseDouble(value) > 2600) {
+			return "1";
 		} else {
-			return idAlert;
+			return "0";
 		}
 	}
 
-	public void setIdAlert(String idAlert) {
-		this.idAlert = idAlert;
-	}
 	public String getValue() {
 		return value;
 	}
