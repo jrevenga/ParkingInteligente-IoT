@@ -256,8 +256,8 @@ public class ConectionDDBB
     	return getStatement(con,"SELECT parking.plazas_disponibles\n" 
                         + "FROM parking2.parking\n" 
                         + "JOIN parking2.ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
-                        + "WHERE ciudad.id_ciudad = 1\n"
-                        + "AND parking.id_parking = 1");  	
+                        + "WHERE ciudad.id_ciudad = ?\n"
+                        + "AND parking.id_parking = ?");  	
     }  
     
     public static PreparedStatement InsertMeasurement(Connection con) {

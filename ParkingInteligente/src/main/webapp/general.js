@@ -140,7 +140,7 @@ function actualizarDatosPlazas(){
             console.log("Respuesta del servidor:", data);
             
             
-            var valorNuevo = data.map(item => item.value);
+            var valorNuevo = data.map(item => item.plazas_disponibles);
             console.log("Datos cargados correctamente:", valorNuevo);
 			var sensorTemperaturaElemento = document.getElementById('plazas');
 			sensorTemperaturaElemento.textContent = 'Plazas Disponibles: ' + valorNuevo;
@@ -280,7 +280,9 @@ function grafica5(){
         success: function(data) {
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
-            
+            if (myChart) {
+                myChart.destroy();
+            }
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -332,7 +334,9 @@ function grafica4(){
         success: function(data) {
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
-            
+            if (myChart) {
+                myChart.destroy();
+            }
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -385,7 +389,9 @@ function grafica3(){
         success: function(data) {
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
-            
+            if (myChart) {
+                myChart.destroy();
+            }
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -435,7 +441,9 @@ function grafica2(){
         success: function(data) {
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
-            
+            if (myChart) {
+                myChart.destroy();
+            }
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -487,7 +495,9 @@ function grafica1(){
         success: function(data) {
             // Prepara los datos para la gráfica
             console.log("Respuesta del servidor:", data);
-            
+            if (myChart) {
+                myChart.destroy();
+            }
             
             var labels = data.map(item => item.timestamp);
             var values = data.map(item => item.value);
@@ -521,6 +531,7 @@ function grafica1(){
             console.error("Error al cargar el archivo JSON:", error);
         }
     });
+	
 }
 
 function actualizarFechaHora() {
