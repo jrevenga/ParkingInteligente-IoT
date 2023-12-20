@@ -522,7 +522,7 @@ public class Logic
     			ps.setString(6, sdf.format(timestamp));
     			ps.setString(7, newTopic.getValue());
     			ps.setString(8, newTopic.getIdAlert());
-    			Log.log.info("Query to store Measurement=> {}", ps.toString());
+    			Log.log.info("Query to store historico_mediciones=> {}", ps.toString());
     			ps.executeUpdate();
     		} catch (SQLException e)
     		{
@@ -538,5 +538,71 @@ public class Logic
     			conector.closeConnection(con);
     		}
     	}
+        
+        public static void storeNewPlazasLibres(Topics newTopic)
+    	{
+    		ConectionDDBB conector = new ConectionDDBB();
+    		Connection con = null;
+    		try
+    		{
+    			con = conector.obtainConnection(true);
+    			Log.log.debug("Database Connected");
+    			
+    			PreparedStatement ps = ConectionDDBB.UpdatePlazasLibres(con);
+    			ps.setString(1, newTopic.getIdParking());
+    			ps.setString(2, newTopic.getPlazasLibres());
+    			ps.setString(3, newTopic.getPlazasLibres());
+    			Log.log.info("Query to store PlazasLibres=> {}", ps.toString());
+    			ps.executeUpdate();
+    		} catch (SQLException e)
+    		{
+    			Log.log.error("Error: {}", e);
+    		} catch (NullPointerException e)
+    		{
+    			Log.log.error("Error: {}", e);
+    		} catch (Exception e)
+    		{
+    			Log.log.error("Error:{}", e);
+    		} finally
+    		{
+    			conector.closeConnection(con);
+    		}
+    	}
+        
+        public static void storeNewHistoricoCoches(Topics newTopic)
+    	{
+    		ConectionDDBB conector = new ConectionDDBB();
+    		Connection con = null;
+    		try
+    		{
+    			con = conector.obtainConnection(true);
+    			Log.log.debug("Database Connected");
+    			PreparedStatement ps = ConectionDDBB.InsertMatriculas(con);
+    			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    			ps.setString(1, sdf.format(timestamp));
+    			ps.setString(2, newTopic.getMatricula());
+    			ps.setString(3, newTopic.getEntrada());
+    			ps.setString(4, newTopic.getIdParking());
+    			ps.setString(5, sdf.format(timestamp));
+    			ps.setString(6, newTopic.getMatricula());
+    			ps.setString(7, newTopic.getEntrada());
+    			ps.setString(8, newTopic.getIdParking());
+    			Log.log.info("Query to store PlazasLibres=> {}", ps.toString());
+    			ps.executeUpdate();
+    		} catch (SQLException e)
+    		{
+    			Log.log.error("Error: {}", e);
+    		} catch (NullPointerException e)
+    		{
+    			Log.log.error("Error: {}", e);
+    		} catch (Exception e)
+    		{
+    			Log.log.error("Error:{}", e);
+    		} finally
+    		{
+    			conector.closeConnection(con);
+    		}
+    	}
+        
 }
 
