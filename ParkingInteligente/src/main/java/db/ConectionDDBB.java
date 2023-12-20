@@ -204,19 +204,60 @@ public class ConectionDDBB
     }  
     public static PreparedStatement GetMonthGasesFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM Measurement JOIN Sensor ON Measurement.sensor = Sensor.id JOIN Parking ON Sensor.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE Sensor.tipo = 'gas' AND City.id = ? AND Parking.id = ? AND Measurement.timestamp >= NOW() - INTERVAL 30 DAY;");  	
+    	return getStatement(con,"SELECT DATE_FORMAT(historico_mediciones.fecha, '%Y-%m-%d') as fecha, AVG(historico_mediciones.valor) as media_valor\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE sensor.id_tipo = ?\n"
+    			+ "AND ciudad.id_ciudad = ?\n"
+    			+ "AND parking.id_parking = ?\n"
+    			+ "AND historico_mediciones.fecha >= NOW() - INTERVAL 30 DAY\n"
+    			+ "GROUP BY DATE_FORMAT(historico_mediciones.fecha, '%Y-%m-%d');");
     }  
+    public static PreparedStatement GetMonthHumidityFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT DATE_FORMAT(historico_mediciones.fecha, '%Y-%m-%d') as fecha, AVG(historico_mediciones.valor) as media_valor\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE sensor.id_tipo = ?\n"
+    			+ "AND ciudad.id_ciudad = ?\n"
+    			+ "AND parking.id_parking = ?\n"
+    			+ "AND historico_mediciones.fecha >= NOW() - INTERVAL 30 DAY\n"
+    			+ "GROUP BY DATE_FORMAT(historico_mediciones.fecha, '%Y-%m-%d');");
+    }
     public static PreparedStatement GetMonthAlarmsFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM Measurement JOIN Sensor ON Measurement.sensor = Sensor.id JOIN Parking ON Sensor.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE Measurement.alerta = true AND City.id = ? AND Parking.id = ? AND Measurement.timestamp >= NOW() - INTERVAL 30 DAY;");  	
-    }  
+    	return getStatement(con,"SELECT historico_mediciones.id_sensor,historico_mediciones.fecha,historico_mediciones.valor,historico_mediciones.alerta\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE historico_mediciones.alerta = true\n"
+    			+ "AND ciudad.id_ciudad = ?\n"
+    			+ "AND parking.id_parking = ?\n"
+    			+ "AND historico_mediciones.fecha >= NOW() - INTERVAL 30 DAY;");  	
+    } 
     public static PreparedStatement GetMonthCarHistoryFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM CarHistory JOIN Parking ON CarHistory.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE City.id = ? AND Parking.id = ? AND CarHistory.timestamp >= NOW() - INTERVAL 30 DAY;");  	
-    }  
-    public static PreparedStatement GetParkingTimeDayFromParking(Connection con)
+    	//HAY QUE CAMBIAR Entrada POR entrada
+    	return getStatement(con,"SELECT DATE_FORMAT(historico_coches.fecha, '%Y-%m-%d') as fecha,historico_coches.matricula,historico_coches.Entrada,historico_coches.id_parking\n"
+    			+ "FROM historico_coches\n"
+    			+ "JOIN parking ON historico_coches.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE ciudad.id_ciudad = ?\n"
+    			+ "AND parking.id_parking = ?\n"
+    			+ "AND historico_coches.fecha >= NOW() - INTERVAL 30 DAY;");
+    }   
+    public static PreparedStatement GetEmptyPlacesFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM CarHistory JOIN Parking ON CarHistory.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE City.id = ? AND Parking.id = ? AND DATE(CarHistory.timestamp) = CURRENT_DATE;");  	
+    	return getStatement(con,"SELECT parking.plazas_disponibles\n" 
+                        + "FROM parking2.parking\n" 
+                        + "JOIN parking2.ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+                        + "WHERE ciudad.id_ciudad = 1\n"
+                        + "AND parking.id_parking = 1");  	
     }  
     
     public static PreparedStatement InsertMeasurement(Connection con) {
@@ -237,7 +278,12 @@ public class ConectionDDBB
     
     public static PreparedStatement GetActualCarHistoryFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM historico_coches JOIN parking ON historico_coches.id_parking = parking.id_parking JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad WHERE ciudad.id_ciudad = ? AND parking.id_parking = ? AND date(historico_coches.fecha) = current_date();");  	
+    	return getStatement(con,"SELECT * FROM historico_coches\n"
+    			+ "JOIN parking ON historico_coches.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE ciudad.id_ciudad = ?\n"
+    			+ "AND parking.id_parking = ?\n"
+    			+ "AND date(historico_coches.fecha) = current_date();");  	
     }
     
     public static PreparedStatement GetActualGasesFromParking(Connection con)
