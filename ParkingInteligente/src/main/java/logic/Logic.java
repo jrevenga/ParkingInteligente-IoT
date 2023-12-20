@@ -2,6 +2,7 @@ package logic;
 
 import java.util.ArrayList;
 
+
 import db.ChartMeasurements;
 import db.City;
 import db.ConectionDDBB;
@@ -11,6 +12,7 @@ import db.CarHistory;
 import db.Measurement;
 import db.Parking;
 import db.Topics;
+import db.Ocupacion;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,6 +22,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
+
 
 public class Logic 
 {
@@ -280,9 +283,9 @@ public class Logic
 	 * @param idParking ID of the parking to search
 	 * @return History of the parking
 	 */
-	public static ArrayList<CarHistory> getMonthCarHistoryFromParking(int idCiudad, int idParking)
+	public static ArrayList<Ocupacion> getMonthCarHistoryFromParking(int idCiudad, int idParking)
 	{
-		ArrayList<CarHistory> registros = new ArrayList<CarHistory>();
+		ArrayList<Ocupacion> ocupaciones = new ArrayList<Ocupacion>();
 		
 		ConectionDDBB conector = new ConectionDDBB();
 		Connection con = null;
@@ -298,30 +301,28 @@ public class Logic
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{
-				CarHistory registro = new CarHistory();
-				registro.setParking(idParking);
-				registro.setMatricula(rs.getString("MATRICULA"));
-				registro.setTimestamp(rs.getTimestamp("FECHA"));
-				registro.setEntrada(rs.getBoolean("ENTRADA"));
-				registros.add(registro);
+				Ocupacion ocupacion= new Ocupacion();
+				ocupacion.setFecha(rs.getDate("fecha_entrada"));
+				ocupacion.setCantidad(rs.getInt("cantidad_coches"));
+				ocupaciones.add(ocupacion);
 			}	
 		} catch (SQLException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<CarHistory>();
+			ocupaciones = new ArrayList<Ocupacion>();
 		} catch (NullPointerException e)
 		{
 			Log.log.error("Error: {}", e);
-			registros = new ArrayList<CarHistory>();
+			ocupaciones = new ArrayList<Ocupacion>();
 		} catch (Exception e)
 		{
 			Log.log.error("Error:{}", e);
-			registros = new ArrayList<CarHistory>();
+			ocupaciones = new ArrayList<Ocupacion>();
 		} finally
 		{
 			conector.closeConnection(con);
 		}
-		return registros;
+		return ocupaciones;
 	}
 
 	/**

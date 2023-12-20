@@ -263,13 +263,13 @@ public class ConectionDDBB
     public static PreparedStatement GetMonthCarHistoryFromParking(Connection con)
     {
     	//HAY QUE CAMBIAR Entrada POR entrada
-    	return getStatement(con,"SELECT DATE_FORMAT(historico_coches.fecha, '%Y-%m-%d') as fecha,historico_coches.matricula,historico_coches.Entrada,historico_coches.id_parking\n"
+    	return getStatement(con,"SELECT DATE(fecha) AS fecha_entrada, COUNT(*) AS cantidad_coches\n"
     			+ "FROM historico_coches\n"
     			+ "JOIN parking ON historico_coches.id_parking = parking.id_parking\n"
     			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
     			+ "WHERE ciudad.id_ciudad = ?\n"
     			+ "AND parking.id_parking = ?\n"
-    			+ "AND historico_coches.fecha >= NOW() - INTERVAL 30 DAY;");
+    			+ "AND entrada = 1 AND fecha >= CURDATE() - INTERVAL 30 DAY GROUP BY fecha_entrada ORDER BY fecha_entrada DESC;");
     }   
     public static PreparedStatement GetEmptyPlacesFromParking(Connection con)
     {

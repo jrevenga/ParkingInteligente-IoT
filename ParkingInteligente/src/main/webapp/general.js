@@ -4,9 +4,8 @@ document.addEventListener('DOMContentLoaded', function() {
     actualizarFechaHora();
     setInterval(actualizarFechaHora, 1000); // Actualizar cada segundo
 
-    //boton soporte tecnico y notas de parche
+    //boton soporte tecnico
     var btnSoporte = document.getElementById("btnSoporte");
-    var btnNotas = document.getElementById("btnNotas");
 
     btnSoporte.addEventListener("click", function(){
         window.location.href = "soporteTecnico.html";
@@ -474,8 +473,8 @@ function grafica2(){
             chartContainer.innerHTML = ''; // Limpiar cualquier contenido existente
             chartContainer.appendChild(canvasElement);
             
-            var labels = data.map(item => item.timestamp);
-            var values = data.map(item => item.value);
+            var labels = data.map(item => item.fecha);
+            var values = data.map(item => item.cantidad);
             console.log("Datos cargados correctamente:", labels, values);
 
             // Configura la gráfica

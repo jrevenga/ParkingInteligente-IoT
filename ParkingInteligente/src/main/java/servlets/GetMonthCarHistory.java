@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import db.CarHistory;
+import db.Ocupacion;
 import logic.Log;
 import logic.Logic;
 
@@ -41,7 +41,7 @@ public class GetMonthCarHistory extends HttpServlet {
 			Log.log.info("idCiudad= "+idCiudad);
 			Log.log.info("idParking= "+idParking);
 			
-			ArrayList<CarHistory> values =Logic.getMonthCarHistoryFromParking(idCiudad,idParking);
+			ArrayList<Ocupacion> values =Logic.getMonthCarHistoryFromParking(idCiudad,idParking);
 			String jsonHistorico = new Gson().toJson(values);
 			Log.log.info("JSON Sensors Values=> {}", jsonHistorico);
 			out.println(jsonHistorico);
