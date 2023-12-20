@@ -139,10 +139,10 @@ function actualizarDatosPlazas(){
             console.log("Respuesta del servidor:", data);
             
             
-            var valorNuevo = data.map(item => item.plazas_disponibles);
+            var valorNuevo = data;
             console.log("Datos cargados correctamente:", valorNuevo);
 			var sensorTemperaturaElemento = document.getElementById('plazas');
-			sensorTemperaturaElemento.textContent = 'Plazas Disponibles: ' + valorNuevo;
+			sensorTemperaturaElemento.textContent = 'Plazas: ' + valorNuevo;
             
         },
         error: function(xhr, status, error) {

@@ -338,7 +338,7 @@ public class Logic
         
 	public static int getEmptyPlacesFromParking(int idCiudad, int idParking)
 	{	
-                int plazasLibres = 0;
+        int plazasLibres = 3;
 		ConectionDDBB conector = new ConectionDDBB();
 		Connection con = null;
 		try
