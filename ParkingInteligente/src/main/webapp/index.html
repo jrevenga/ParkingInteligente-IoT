@@ -8,7 +8,6 @@
     
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src = "general.js"></script>
-        <script src="conexion.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     </head>
     <body>
@@ -39,12 +38,12 @@
             <div class="columna izquierda">
                 <div class="tituloIzquierda">Estadisticas</div>
                 <ul class="estadisticas">
-                    <li><button id="botonEstadistica1" onclick=> Temperatura    </button></li>
-                    <li><button id="botonEstadistica2" onclick=> Ocupacion      </button></li>
-                    <li><button id="botonEstadistica3" onclick=> Humo           </button></li>
-                    <li><button id="botonEstadistica4" onclick=> Humedad        </button></li>
-                    <li><button id="botonEstadistica5" onclick=> Seguridad      </button></li>
-                    <li><button id="botonEstadistica6" onclick=> Aparcamiento   </button></li>
+                    <li><button id="botonEstadistica1" onclick> Temperatura    </button></li>
+                    <li><button id="botonEstadistica2" onclick> Ocupacion      </button></li>
+                    <li><button id="botonEstadistica3" onclick> Humo           </button></li>
+                    <li><button id="botonEstadistica4" onclick> Humedad        </button></li>
+                    <li><button id="botonEstadistica5" onclick> Seguridad      </button></li>
+                    <li><button id="botonEstadistica6" onclick> Aparcamiento   </button></li>
                 </ul>
             </div>
             <div class="columna central">
@@ -57,42 +56,13 @@
                 
                 <ul class="sensores">
                     <li>Plazas Disponibles: 4</li>
-                    <li>Sensor de Temperatura: 25ºC</li>
-                    <li>Sensor de Humedad: 20% </li>
-                    <li>Sensor de Humo: 30ppm</li>
+                    <li id="sensorTemperatura">Sensor de Temperatura</li>
+                    <li id="sensorHumedad">Sensor de Humedad</li>
+                    <li id="sensorHumo">Sensor de Humo</li>
                 </ul>
                 <div class="matriculasHoy">
                     <textarea id="areaMatriculas" readonly>
-                    ABC-123
-                    XYZ-789
-                    DEF-456
-                    GHI-789
-                    JKL-012
-                    ABC-123
-                    XYZ-789
-                    DEF-456
-                    GHI-789
-                    JKL-012
-                    ABC-123
-                    XYZ-789
-                    DEF-456
-                    GHI-789
-                    JKL-012
-                    ABC-123
-                    XYZ-789
-                    DEF-456
-                    GHI-789
-                    JKL-012
-                    ABC-123
-                    XYZ-789
-                    DEF-456
-                    GHI-789
-                    JKL-012
-                    ABC-123
-                    XYZ-789
-                    DEF-456
-                    GHI-789
-                    JKL-012
+                    
                     </textarea>
                 </div>
             </div>

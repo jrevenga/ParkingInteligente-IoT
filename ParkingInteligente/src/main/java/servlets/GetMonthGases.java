@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
+import db.CarHistory;
 
 import db.Measurement;
 import logic.Log;

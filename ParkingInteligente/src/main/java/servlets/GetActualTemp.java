@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import logic.Log;
 import logic.Logic;
@@ -38,9 +39,10 @@ public class GetActualTemp extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		try 
 		{
+			int idTipo = Integer.parseInt(request.getParameter("idTipo"));
 			int idCiudad = Integer.parseInt(request.getParameter("idCiudad"));
 			int idParking = Integer.parseInt(request.getParameter("idParking"));
-			int idTipo = Integer.parseInt(request.getParameter("idTipo"));	
+				
 			Log.log.info("idCiudad= "+idCiudad);
 			Log.log.info("idParking= "+idParking);
 			Log.log.info("idTipo= "+idTipo);

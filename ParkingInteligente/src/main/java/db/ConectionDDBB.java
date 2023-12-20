@@ -115,18 +115,17 @@ public class ConectionDDBB
     //************** CALLS TO THE DATABASE ***************************//
     public static PreparedStatement GetMonthTempFromParking(Connection con)
     {
-    	PreparedStatement ps = getStatement(con,"SELECT * FROM historico_mediciones JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor JOIN parking ON sensor.id_parking = parking.id_parking JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad WHERE sensor.id_tipo = ? AND ciudad.id_ciudad = ? AND parking.id_parking = ? AND historico_mediciones.fecha >= NOW() - INTERVAL 30 DAY;");
+    	PreparedStatement ps = getStatement(con,"SELECT DATE_FORMAT(historico_mediciones.fecha, '%Y-%m-%d') as fecha, AVG(historico_mediciones.valor) as media_valor\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE sensor.id_tipo = ?\n"
+    			+ "AND ciudad.id_ciudad = ?\n"
+    			+ "AND parking.id_parking = ?\n"
+    			+ "AND historico_mediciones.fecha >= NOW() - INTERVAL 30 DAY\n"
+    			+ "GROUP BY DATE_FORMAT(historico_mediciones.fecha, '%Y-%m-%d');");
     	Log.log.debug(ps);
-    	/*
-    	
-    	PreparedStatement ps = getStatement(con,"SELECT * FROM Measurement JOIN Sensor ON Measurement.sensor_id = Sensor.id JOIN Parking ON Sensor.parking_id = Parking.id JOIN City ON Parking.ciudad = City.id WHERE Sensor.tipo = 'temperatura' AND City.id = ? AND Parking.id = ? AND Sensor.tipo = ? AND Measurement.timestamp >= NOW() - INTERVAL 30 DAY;");
-    
-        try {
-            ps.clearParameters(); // Limpiar los parámetros existentes, si los hay
-        } catch (SQLException e) {
-            e.printStackTrace(); // Manejo de la excepción
-        }
-	*/
     return ps;
     }  
     public static PreparedStatement GetMonthGasesFromParking(Connection con)
@@ -191,17 +190,49 @@ public class ConectionDDBB
     
     public static PreparedStatement GetActualCarHistoryFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM CarHistory JOIN Parking ON CarHistory.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE City.id = ? AND Parking.id = ? AND CarHistory.timestamp = CURRENT_TIMESTAMP;");  	
+    	return getStatement(con,"SELECT * FROM historico_coches JOIN parking ON historico_coches.id_parking = parking.id_parking JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad WHERE ciudad.id_ciudad = ? AND parking.id_parking = ? AND date(historico_coches.fecha) = current_date();");  	
     }
     
     public static PreparedStatement GetActualGasesFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM Measurement JOIN Sensor ON Measurement.sensor = Sensor.id JOIN Parking ON Sensor.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE Sensor.tipo = 2 AND City.id = ? AND Parking.id = ? AND Measurement.timestamp = CURRENT_TIMESTAMP;");  	
+    	return getStatement(con,"SELECT historico_mediciones.id_sensor,historico_mediciones.fecha,historico_mediciones.valor,historico_mediciones.alerta\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE sensor.id_tipo = ?\n"
+    			+ "  AND ciudad.id_ciudad = ?\n"
+    			+ "  AND parking.id_parking = ?\n"
+    			+ "ORDER BY historico_mediciones.fecha DESC\n"
+    			+ "LIMIT 1;");  	
     }
     
-    public static PreparedStatement GetActuaTempFromParking(Connection con)
+    public static PreparedStatement GetActualHumidityFromParking(Connection con)
     {
-    	return getStatement(con,"SELECT * FROM Measurement JOIN Sensor ON Measurement.sensor = Sensor.id JOIN Parking ON Sensor.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE Sensor.tipo = 1 AND City.id = ? AND Parking.id = ? AND Measurement.timestamp = CURRENT_TIMESTAMP;");  	
+    	return getStatement(con,"SELECT historico_mediciones.id_sensor,historico_mediciones.fecha,historico_mediciones.valor,historico_mediciones.alerta\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE sensor.id_tipo = ?\n"
+    			+ "  AND ciudad.id_ciudad = ?\n"
+    			+ "  AND parking.id_parking = ?\n"
+    			+ "ORDER BY historico_mediciones.fecha DESC\n"
+    			+ "LIMIT 1;");  	
+    }
+    
+    public static PreparedStatement GetActualTempFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT historico_mediciones.id_sensor,historico_mediciones.fecha,historico_mediciones.valor,historico_mediciones.alerta\n"
+    			+ "FROM historico_mediciones\n"
+    			+ "JOIN sensor ON historico_mediciones.id_sensor = sensor.id_sensor\n"
+    			+ "JOIN parking ON sensor.id_parking = parking.id_parking\n"
+    			+ "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+    			+ "WHERE sensor.id_tipo = ?\n"
+    			+ "  AND ciudad.id_ciudad = ?\n"
+    			+ "  AND parking.id_parking = ?\n"
+    			+ "ORDER BY historico_mediciones.fecha DESC\n"
+    			+ "LIMIT 1;");  	
     }
     
 }

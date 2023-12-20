@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 
 import db.Measurement;
+import java.sql.Timestamp;
 import logic.Log;
 import logic.Logic;
 

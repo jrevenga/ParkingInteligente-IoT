@@ -6,7 +6,7 @@
 -- Generation Time: Dec 02, 2023 at 11:55 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
-USE parking;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -42,24 +42,35 @@ CREATE TABLE `ciudad` (
 CREATE TABLE `historico_coches` (
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `matricula` varchar(15) NOT NULL,
-  `Entrada` tinyint(1) NOT NULL,
+  `entrada` tinyint(1) NOT NULL,
   `id_parking` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
-
 --
+-- Table structure for table `sensor`
+--
+
+CREATE TABLE `sensor` (
+  `id_parking` int(11) DEFAULT NULL,
+  `id_tipo` int(11) DEFAULT NULL,
+  `id_sensor` int(11) NOT NULL,
+  PRIMARY KEY (`id_sensor`)  -- Agregar una clave primaria a la tabla sensor
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+--
+-- --------------------------------------------------------
 -- Table structure for table `historico_mediciones`
 --
-
 CREATE TABLE `historico_mediciones` (
   `id_sensor` int(11) NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   `valor` double NOT NULL,
-  `alerta` tinyint(1) NOT NULL
+  `alerta` tinyint(1) NOT NULL,
+  PRIMARY KEY (`fecha`, `id_sensor`),  -- Clave primaria compuesta
+  CONSTRAINT `fk_mediciones_sensor`
+  FOREIGN KEY (`id_sensor`)
+  REFERENCES `sensor` (`id_sensor`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
 
 --
 -- Table structure for table `parking`
@@ -70,20 +81,13 @@ CREATE TABLE `parking` (
   `nombre` varchar(30) NOT NULL,
   `latitud` double NOT NULL,
   `longitud` double NOT NULL,
-  `id_ciudad` int(11) DEFAULT NULL
+  `id_ciudad` int(11) DEFAULT NULL,
+  `plazas_totales` int(11) DEFAULT 0,
+  `plazas_disponibles` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
+-- ------------------------------------------------------
 
---
--- Table structure for table `sensor`
---
-
-CREATE TABLE `sensor` (
-  `id_parking` int(11) DEFAULT NULL,
-  `id_tipo` int(11) DEFAULT NULL,
-  `id_sensor` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -117,26 +121,14 @@ ALTER TABLE `historico_coches`
   ADD KEY `fk_historico_parking` (`id_parking`);
 
 --
--- Indexes for table `historico_mediciones`
---
-ALTER TABLE `historico_mediciones`
-  ADD PRIMARY KEY (`fecha`),
-  ADD KEY `fk_mediciones_sensor` (`id_sensor`);
 
---
+
 -- Indexes for table `parking`
 --
 ALTER TABLE `parking`
   ADD PRIMARY KEY (`id_parking`),
   ADD KEY `fk_parking_ciudad` (`id_ciudad`);
 
---
--- Indexes for table `sensor`
---
-ALTER TABLE `sensor`
-  ADD PRIMARY KEY (`id_sensor`),
-  ADD KEY `fk_sensor_tipo` (`id_tipo`),
-  ADD KEY `fk_sensor_parking` (`id_parking`);
 
 --
 -- Indexes for table `tipo_sensor`
@@ -155,10 +147,6 @@ ALTER TABLE `historico_coches`
   ADD CONSTRAINT `fk_historico_parking` FOREIGN KEY (`id_parking`) REFERENCES `parking` (`id_parking`);
 
 --
--- Constraints for table `historico_mediciones`
---
-ALTER TABLE `historico_mediciones`
-  ADD CONSTRAINT `fk_mediciones_sensor` FOREIGN KEY (`id_sensor`) REFERENCES `sensor` (`id_sensor`);
 
 --
 -- Constraints for table `parking`
@@ -177,3 +165,4 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
