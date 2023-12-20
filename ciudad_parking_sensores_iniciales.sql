@@ -29,7 +29,7 @@ unidades,
 minvalor,
 maxvalor)
 VALUES
-(3, 'gas', 'alertas', -1.0, 1.0);
+(3, 'gas', 'ppm', -1.0, 10000.0);
 
 INSERT INTO parking.sensor (id_parking, id_tipo, id_sensor)
 VALUES (1, 1, 1);
