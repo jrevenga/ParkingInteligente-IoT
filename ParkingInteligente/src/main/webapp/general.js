@@ -1,5 +1,6 @@
 
 document.addEventListener('DOMContentLoaded', function() {
+	var myChart;
     //cabecera
     actualizarFechaHora();
     setInterval(actualizarFechaHora, 1000); // Actualizar cada segundo
@@ -76,37 +77,46 @@ document.addEventListener('DOMContentLoaded', function() {
     botonEstadistica1.addEventListener("click", function(){
         columnaCentral.classList.add('visible');
         grafica1();
-        tituloEst.textContent = "Temperatura media del ultimo mes";
+        tituloEst.textContent = "Temperatura media diaria del ultimo mes";
         descripcionElemento.textContent = "Esta grafica contiene los datos sobre la temperatura media diaria del ultimo mes. Los datos recogidos ayudan a visualizar los picos de temperatura, permitiendo establecer que dias aumenta la temperatura, normalmente por el transito de coches.";
         
     });
 
     botonEstadistica2.addEventListener("click", function(){
         columnaCentral.classList.add('visible');
+        grafica2();
+        tituloEst.textContent = "Ocupacion media diaria del ultimo mes";
+        descripcionElemento.textContent ="Esta grafica contiene los datos sobre la ocupacion media diaria del ultimo mes. Los datos recodigos ayudan a ver los dias mas concurridos.";
     });
 
     botonEstadistica3.addEventListener("click", function(){
         columnaCentral.classList.add('visible');
+        grafica3();
+        tituloEst.textContent = "Humo medio diario del ultimo mes";
+        descripcionElemento.textContent ="Esta grafica contiene los datos sobre el humo medio diaria del ultimo mes. Los datos recogidos pueden ayudar a identificar que dias hay mayor volumen de humo en el parking.";
     });
 
     botonEstadistica4.addEventListener("click", function(){
         columnaCentral.classList.add('visible');
+        grafica4();
+        tituloEst.textContent = "Humedad media del ultimo mes";
+        descripcionElemento.textContent ="Esta grafica contiene los datos sobre la humedad media diaria del ultimo mes. Estos datos nos permiten identificar que dias del mes ha habido mas humedad, si ha ido aumentando con el paso de los dias o si tiene alguna relacion con la cantidad de transito de coches u otras variables contempladas en las estadisticas.";
     });
 
     botonEstadistica5.addEventListener("click", function(){
         columnaCentral.classList.add('visible');
+        grafica5();
+        tituloEst.textContent = "Seguridad del ultimo mes";
+        descripcionElemento.textContent ="Esta grafica contiene los datos sobre las alarmas diarias del ultimo mes. Nos permite identificar la cantidad de accidentes o incidentes que ha habido en el parking y si tiene relacion con alguna otra estadistica.";
     });
 
-    botonEstadistica6.addEventListener("click", function(){
-        columnaCentral.classList.add('visible');
-    });
 
 
 	//actualizar cada 5 segundos
 	setInterval(function() {
 		//actualiza valores actuales
  		
-        
+        actualizarDatosPlazas();
         actualizarDatosHumedad();
         actualizarDatosTemperatura();
         actualizarDatosHumo();
@@ -114,6 +124,33 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 5000);
 
 });
+
+function actualizarDatosPlazas(){
+	console.log("datos actuales actualizando.");
+    var idParking= 1;
+    var idCiudad = 1;
+    $.ajax({
+        
+        data: { idCiudad : idCiudad,idParking : idParking}, 
+        url: './GetEmptyPlaces',  
+        dataType: 'json',
+        type: 'post',
+        
+        success: function(data) {
+            console.log("Respuesta del servidor:", data);
+            
+            
+            var valorNuevo = data.map(item => item.value);
+            console.log("Datos cargados correctamente:", valorNuevo);
+			var sensorTemperaturaElemento = document.getElementById('plazas');
+			sensorTemperaturaElemento.textContent = 'Plazas Disponibles: ' + valorNuevo;
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al cargar el archivo JSON:", error);
+        }
+    });
+}
 
 function actualizarDatosHumo(){
 	console.log("datos actuales actualizando.");
@@ -229,15 +266,220 @@ function actualizarDatosTemperatura(){
 }
 
 
+function grafica5(){
+	console.log("Document ready event has occurred.");
+    var idParking= 1;
+    var idCiudad = 1;
+    $.ajax({
+        
+        data: { idCiudad : idCiudad,idParking : idParking}, 
+        url: './GetMonthAlarms',  
+        dataType: 'json',
+        type: 'post',
+        
+        success: function(data) {
+            // Prepara los datos para la gráfica
+            console.log("Respuesta del servidor:", data);
+            
+            
+            var labels = data.map(item => item.timestamp);
+            var values = data.map(item => item.value);
+            console.log("Datos cargados correctamente:", labels, values);
+
+            // Configura la gráfica
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Datos de la Temperatura',
+                        data: values,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo
+                        borderColor: 'rgba(255, 99, 132, 1)',      // Color del borde
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al cargar el archivo JSON:", error);
+        }
+    });
+}
+
+
+function grafica4(){
+	console.log("Document ready event has occurred.");
+    var idParking= 1;
+    var idCiudad = 1;
+    var idTipo =  2;
+    $.ajax({
+        
+        data: { idCiudad : idCiudad,idParking : idParking, idTipo : idTipo}, 
+        url: './GetMonthHumidity',  
+        dataType: 'json',
+        type: 'post',
+        
+        success: function(data) {
+            // Prepara los datos para la gráfica
+            console.log("Respuesta del servidor:", data);
+            
+            
+            var labels = data.map(item => item.timestamp);
+            var values = data.map(item => item.value);
+            console.log("Datos cargados correctamente:", labels, values);
+
+            // Configura la gráfica
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Datos de la Temperatura',
+                        data: values,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo
+                        borderColor: 'rgba(255, 99, 132, 1)',      // Color del borde
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al cargar el archivo JSON:", error);
+        }
+    });
+}
+
+
+
+function grafica3(){
+	console.log("Document ready event has occurred.");
+    var idParking= 1;
+    var idCiudad = 1;
+    var idTipo =  3;
+    $.ajax({
+        
+        data: { idCiudad : idCiudad,idParking : idParking, idTipo : idTipo}, 
+        url: './GetMonthGases',  
+        dataType: 'json',
+        type: 'post',
+        
+        success: function(data) {
+            // Prepara los datos para la gráfica
+            console.log("Respuesta del servidor:", data);
+            
+            
+            var labels = data.map(item => item.timestamp);
+            var values = data.map(item => item.value);
+            console.log("Datos cargados correctamente:", labels, values);
+
+            // Configura la gráfica
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Datos de la Temperatura',
+                        data: values,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo
+                        borderColor: 'rgba(255, 99, 132, 1)',      // Color del borde
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al cargar el archivo JSON:", error);
+        }
+    });
+}
+
+function grafica2(){
+	console.log("Document ready event has occurred.");
+    var idParking= 1;
+    var idCiudad = 1;
+    $.ajax({
+        
+        data: { idCiudad : idCiudad,idParking : idParking}, 
+        url: './GetMonthCarHistory',  
+        dataType: 'json',
+        type: 'post',
+        
+        success: function(data) {
+            // Prepara los datos para la gráfica
+            console.log("Respuesta del servidor:", data);
+            
+            
+            var labels = data.map(item => item.timestamp);
+            var values = data.map(item => item.value);
+            console.log("Datos cargados correctamente:", labels, values);
+
+            // Configura la gráfica
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Datos de la Temperatura',
+                        data: values,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)', // Color de fondo
+                        borderColor: 'rgba(255, 99, 132, 1)',      // Color del borde
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+            
+        },
+        error: function(xhr, status, error) {
+            console.error("Error al cargar el archivo JSON:", error);
+        }
+    });
+}
+
 
 function grafica1(){
-	console.log("Document ready event has occurred. 3");
+	console.log("Document ready event has occurred.");
     var idParking= 1;
     var idCiudad = 1;
     var idTipo= 1; //temperatura
     $.ajax({
         
-        data: { idCiudad : idCiudad,idParking : idParking, idTipo : idTipo}, 
+        data: { idTipo : idTipo, idCiudad : idCiudad,idParking : idParking}, 
         url: './GetMonthTemp',  
         dataType: 'json',
         type: 'post',

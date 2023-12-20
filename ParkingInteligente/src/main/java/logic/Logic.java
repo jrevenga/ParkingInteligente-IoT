@@ -37,7 +37,7 @@ public class Logic
 
             try {
                 con = conector.obtainConnection(true);
-                Log.log.debug("Database Connected 1");
+                Log.log.debug("Database Connected");
 
                 PreparedStatement ps = ConectionDDBB.GetMonthTempFromParking(con);
                 Log.log.info("ps= ", ps.toString());
