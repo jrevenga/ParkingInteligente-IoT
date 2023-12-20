@@ -112,6 +112,80 @@ public class ConectionDDBB
         return ps;
     }   
     
+  //************** CALLS TO THE DATABASE ***************************//
+    public static PreparedStatement GetParkings(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM parking");
+    }
+    
+    public static PreparedStatement GetParkingsFromCity(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM parking WHERE id_ciudad=?");
+    }
+    
+    public static PreparedStatement GetParkingSensors(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM sensor WHERE id_parking=?;");
+    }
+    
+    //falta
+    public static PreparedStatement GetParkingHistoricoMedicionesLastDays(Connection con)
+    {
+    	return getStatement(con,"SELECT date(DATE) as date, min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg, dayofweek(DATE) as dayofweek FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY and DATE<=now() group by date(DATE) ORDER BY DATE ASC;");  	
+    }
+    //falta
+    public static PreparedStatement GetParkingHistoricoMedicionesLastMonths(Connection con)
+    {
+    	return getStatement(con,"SELECT month(DATE) as month,min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY group by month(DATE) ORDER BY DATE ASC;");  	
+    }
+    
+    public static PreparedStatement GetCities(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM ciudad;");
+    }
+    //falta
+    public static PreparedStatement GetParkingHistoricoMedicionesMonth(Connection con)
+    {
+    	return getStatement(con,"SELECT month(DATE) as date,  min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? group by month(DATE) ORDER BY DATE ASC;");  	
+    }
+    
+    public static PreparedStatement GetUlimasMediciones(Connection con)
+    {
+    	return getStatement(con,"select * from historico_mediciones where id_sensor=? ORDER BY fecha LIMIT 1;");
+    }
+    
+    public static PreparedStatement GetUltimosCoches(Connection con)
+    {
+    	return getStatement(con,"select * from historico_coches where id_parking=? ORDER BY fecha LIMIT 1;");
+    }
+    
+    public static PreparedStatement GetInfoFromParking(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM parking WHERE id_parking=?;");
+    }
+    
+    public static PreparedStatement InsertMedicion(Connection con)
+    {
+    	return getStatement(con,"INSERT INTO historico_mediciones (id_sensor, fecha, valor, alerta) VALUES (?,?,?,?) ON duplicate key update id_sensor=?, fecha=?, valor=?, alerta=?;");  	
+    }
+    
+    public static PreparedStatement InsertMatriculas(Connection con)
+    {
+    	return getStatement(con,"INSERT INTO historico_coches (fecha, matricula, Entrada, id_parking) VALUES (?,?,?,?) ON duplicate key update fecha=?, matricula=?, Entrada=?, id_parking=?;");  	
+    }
+    
+    
+
+    public static PreparedStatement GetDataBD(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM parkig.historico_mediciones");
+    }
+    
+    public static PreparedStatement SetDataBD(Connection con)
+    {
+    	return getStatement(con,"INSERT INTO parking.historico_mediciones VALUES (?,?)");
+    }
+    
     //************** CALLS TO THE DATABASE ***************************//
     public static PreparedStatement GetMonthTempFromParking(Connection con)
     {
@@ -144,24 +218,6 @@ public class ConectionDDBB
     {
     	return getStatement(con,"SELECT * FROM CarHistory JOIN Parking ON CarHistory.parking = Parking.id JOIN City ON Parking.ciudad = City.id WHERE City.id = ? AND Parking.id = ? AND DATE(CarHistory.timestamp) = CURRENT_DATE;");  	
     }  
-    public static PreparedStatement GetParkings(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM PARKING.PARKING");  	
-    }    
-    public static PreparedStatement GetParkingsFromCity(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM PARKING.STATION WHERE id_ciudad=?");  	
-    } 
-    
-    public static PreparedStatement GetParkingSensors(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM PARKING.SENSOR WHERE id_parking=?;");  	
-    }
-    
-    public static PreparedStatement GetCities(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM ciudad;");  	
-    }
     
     public static PreparedStatement InsertMeasurement(Connection con) {
     return getStatement(con, 
@@ -178,15 +234,6 @@ public class ConectionDDBB
     	return getStatement(con,"SELECT * FROM PARKING.SENSOR WHERE id_parking=?;");  	
     }
     
-    public static PreparedStatement GetDataBD(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM PARKING.historico_mediciones");  	
-    }
-    
-    public static PreparedStatement SetDataBD(Connection con)
-    {
-    	return getStatement(con,"INSERT INTO PARKING.HISTORICO_MEDICIONES VALUES (?,?)");  	
-    }
     
     public static PreparedStatement GetActualCarHistoryFromParking(Connection con)
     {

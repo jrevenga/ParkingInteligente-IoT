@@ -504,10 +504,41 @@ public class Logic
 		return registros;
 	}
 
-		public static void storeNewMedicion(Topics newTopic) {
-			// TODO Auto-generated method stub
-			
-		}
+        public static void storeNewMedicion(Topics newTopic)
+    	{
+    		ConectionDDBB conector = new ConectionDDBB();
+    		Connection con = null;
+    		try
+    		{
+    			con = conector.obtainConnection(true);
+    			Log.log.debug("Database Connected");
+    			
+    			PreparedStatement ps = ConectionDDBB.InsertMedicion(con);
+    			ps.setString(1, newTopic.getIdParking());
+    			ps.setString(2, newTopic.getIdSensor());
+    	        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    			ps.setString(3, sdf.format(timestamp));
+    			ps.setString(4, newTopic.getValue());
+    			ps.setString(5, newTopic.getIdParking());
+    			ps.setString(6, newTopic.getIdSensor());
+    			ps.setString(7, sdf.format(timestamp));
+    			ps.setString(8, newTopic.getValue());
+    			Log.log.info("Query to store Measurement=> {}", ps.toString());
+    			ps.executeUpdate();
+    		} catch (SQLException e)
+    		{
+    			Log.log.error("Error: {}", e);
+    		} catch (NullPointerException e)
+    		{
+    			Log.log.error("Error: {}", e);
+    		} catch (Exception e)
+    		{
+    			Log.log.error("Error:{}", e);
+    		} finally
+    		{
+    			conector.closeConnection(con);
+    		}
+    	}
 
 	/**
 	 * 
