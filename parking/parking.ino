@@ -135,7 +135,7 @@ void loop() {
     mqttClient.publish("Ciudad1/Parking1/Plaza3", msg3.c_str());
   }
   
-  if (n % 40 == 0){
+  if (n % 20 == 0){
     //Medir temperatura, humedad y humo
     float temperatura = dht.readTemperature();
     mqttClient.publish("Ciudad1/Parking1/Sensor1", String(temperatura).c_str());
@@ -148,7 +148,7 @@ void loop() {
   if (smokeValue > 2800){
     mqttClient.publish("Ciudad1/Parking1/Sensor3", String(smokeValue).c_str());
   } else{
-    if (n % 40 == 0){
+    if (n % 20 == 0){
       mqttClient.publish("Ciudad1/Parking1/Sensor3", String(smokeValue).c_str());
     }
   }

@@ -113,6 +113,11 @@ public class ConectionDDBB
     }   
     
   //************** CALLS TO THE DATABASE ***************************//
+    public static PreparedStatement GetCities(Connection con)
+    {
+    	return getStatement(con,"SELECT * FROM ciudad;");
+    }
+    
     public static PreparedStatement GetParkings(Connection con)
     {
     	return getStatement(con,"SELECT * FROM parking");
@@ -128,6 +133,16 @@ public class ConectionDDBB
     	return getStatement(con,"SELECT * FROM sensor WHERE id_parking=?;");
     }
     
+    public static PreparedStatement GetParkingPlazasLibres(Connection con)
+    {
+    	return getStatement(con,"SELECT plazas_disponibles FROM parking WHERE id_parking=?;");
+    }
+    
+    public static PreparedStatement GetParkingPlazas(Connection con)
+    {
+    	return getStatement(con,"SELECT plazas_totales FROM parking WHERE id_parking=?;");
+    }
+    
     //falta
     public static PreparedStatement GetParkingHistoricoMedicionesLastDays(Connection con)
     {
@@ -139,10 +154,6 @@ public class ConectionDDBB
     	return getStatement(con,"SELECT month(DATE) as month,min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY group by month(DATE) ORDER BY DATE ASC;");  	
     }
     
-    public static PreparedStatement GetCities(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM ciudad;");
-    }
     //falta
     public static PreparedStatement GetParkingHistoricoMedicionesMonth(Connection con)
     {
@@ -169,11 +180,20 @@ public class ConectionDDBB
     	return getStatement(con,"INSERT INTO historico_mediciones (id_sensor, fecha, valor, alerta) VALUES (?,?,?,?) ON duplicate key update id_sensor=?, fecha=?, valor=?, alerta=?;");  	
     }
     
-    public static PreparedStatement InsertMatriculas(Connection con)
+    public static PreparedStatement UpdatePlazasLibres(Connection con)
     {
-    	return getStatement(con,"INSERT INTO historico_coches (fecha, matricula, Entrada, id_parking) VALUES (?,?,?,?) ON duplicate key update fecha=?, matricula=?, Entrada=?, id_parking=?;");  	
+    	return getStatement(con,"INSERT INTO parking (id_parking, nombre, latitud, longitud, id_ciudad, plazas_totales, plazas_disponibles) VALUES (?, \"ParkRetiro\", 2.5, 3.5, 1, 3, ?) ON DUPLICATE KEY UPDATE plazas_disponibles = ?;");
     }
     
+    public static PreparedStatement UpdatePlazasLibres2(Connection con)
+    {
+    	return getStatement(con,"INSERT INTO parking (plazas_libres) VALUES (?) ON duplicate key update plazas_libres=?;");  	
+    }
+    
+    public static PreparedStatement InsertMatriculas(Connection con)
+    {
+    	return getStatement(con,"INSERT INTO historico_coches (fecha, matricula, entrada, id_parking) VALUES (?,?,?,?) ON duplicate key update fecha=?, matricula=?, entrada=?, id_parking=?;");  	
+    }
     
 
     public static PreparedStatement GetDataBD(Connection con)
@@ -254,11 +274,11 @@ public class ConectionDDBB
     public static PreparedStatement GetEmptyPlacesFromParking(Connection con)
     {
     	return getStatement(con,"SELECT parking.plazas_disponibles\n" 
-                        + "FROM parking2.parking\n" 
-                        + "JOIN parking2.ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
+                        + "FROM parking\n" 
+                        + "JOIN ciudad ON parking.id_ciudad = ciudad.id_ciudad\n"
                         + "WHERE ciudad.id_ciudad = ?\n"
-                        + "AND parking.id_parking = ?");  	
-    }  
+                        + "AND parking.id_parking = ?");
+    }
     
     public static PreparedStatement InsertMeasurement(Connection con) {
     return getStatement(con, 
