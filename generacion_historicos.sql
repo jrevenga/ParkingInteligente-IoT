@@ -45,16 +45,28 @@ CREATE PROCEDURE GenerateGasData()
 BEGIN
   DECLARE i INT DEFAULT 1;
   DECLARE days_back INT DEFAULT 0;
-  
+  DECLARE randomValue DOUBLE;
+
   WHILE i <= 100 DO
+    SET randomValue := ROUND(RAND() * (3000.0 - 1.0), 2) + 1.0;
+
     INSERT INTO parking.historico_mediciones (id_sensor, fecha, valor, alerta)
-    VALUES (3, FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - days_back * 86400), ROUND(RAND() * (2000.0 - 1.0), 2) + 1.0, false);
-    
+    VALUES (
+      3,
+      FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - days_back * 86400),
+      randomValue,
+      CASE
+        WHEN randomValue > 2600 THEN true
+        ELSE false
+      END
+    );
+
     SET days_back := days_back + 1;
     SET i := i + 1;
   END WHILE;
 END //
 DELIMITER ;
+
 
 -- Llamar al procedimiento para generar las consultas
 CALL GenerateGasData();
@@ -70,7 +82,7 @@ SELECT
     1 AS id_parking
 FROM
     information_schema.tables
-LIMIT 100;
+LIMIT 400;
 
 -- Generar 100 registros de salida de coches para los últimos 40 días
 INSERT INTO parking.historico_coches (fecha, matricula, Entrada, id_parking)
@@ -83,4 +95,4 @@ FROM
     parking.historico_coches
 WHERE
     Entrada = 1
-LIMIT 100;
+LIMIT 400;
