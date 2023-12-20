@@ -34,8 +34,8 @@ public class MQTTSuscriber implements MqttCallback
 			Log.logmqtt.debug("Query to search cities=> {}", psCity.toString());
 			ResultSet rsCity = psCity.executeQuery();
 			while (rsCity.next()){
-				String topicCity = "City" + rsCity.getInt("id_ciudad");
-				topics.add("City" + rsCity.getInt("id_ciudad"));
+				String topicCity = "Ciudad" + rsCity.getInt("id_ciudad");
+				topics.add("Ciudad" + rsCity.getInt("id_ciudad"));
 				
 				//Get parkings of the city
 				PreparedStatement psParkings = ConectionDDBB.GetParkingsFromCity(con);
@@ -106,10 +106,10 @@ public class MQTTSuscriber implements MqttCallback
        newTopic.setValue(message.toString());
        if(topic.contains("Sensor"))
        {
-		   newTopic.setIdCity(topics[0].replace("City", ""));
+		   newTopic.setIdCity(topics[0].replace("Ciudad", ""));
 		   newTopic.setIdParking(topics[1].replace("Parking", ""));
 		   newTopic.setIdSensor(topics[2].replace("Sensor", ""));
-    	   Log.logmqtt.info("Mensaje from city{}, parking{} sensor{}: {}", 
+    	   Log.logmqtt.info("Mensaje from ciudad{}, parking{} sensor{}: {}", 
     			   newTopic.getIdCity(), newTopic.getIdParking(), newTopic.getIdSensor(), message.toString());
     	   
     	   //Store the information of the sensor
@@ -118,15 +118,15 @@ public class MQTTSuscriber implements MqttCallback
        {
     	   if(topic.contains("Parking"))
     	   {
-    		   newTopic.setIdCity(topics[0].replace("City", ""));
+    		   newTopic.setIdCity(topics[0].replace("Ciudad", ""));
     		   newTopic.setIdParking(topics[1].replace("Parking", ""));
-        	   Log.logmqtt.info("Mensaje from city{}, parking{}: {}", 
+        	   Log.logmqtt.info("Mensaje from ciudad{}, parking{}: {}", 
         			   newTopic.getIdCity(), newTopic.getIdParking(), message.toString());
     	   }else
     	   {
-    		   if(topic.contains("City"))
+    		   if(topic.contains("Ciudad"))
         	   {
-    			   newTopic.setIdCity(topics[0].replace("City", ""));
+    			   newTopic.setIdCity(topics[0].replace("Ciudad", ""));
     	    	   Log.logmqtt.info("Mensaje from city{}: {}", 
     	    			   newTopic.getIdCity(), message.toString());
         	   }else

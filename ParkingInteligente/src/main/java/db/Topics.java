@@ -8,6 +8,7 @@ public class Topics
     private String idSensor;
     private String idAlert;
     private String value;
+    private String falso = "0";
  
     // constructors
     public Topics() 
@@ -62,7 +63,11 @@ public class Topics
 	}
 
 	public String getIdAlert() {
-		return idAlert;
+		if (idAlert == null) {
+			return falso;
+		} else {
+			return idAlert;
+		}
 	}
 
 	public void setIdAlert(String idAlert) {

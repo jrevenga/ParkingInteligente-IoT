@@ -514,15 +514,15 @@ public class Logic
     			Log.log.debug("Database Connected");
     			
     			PreparedStatement ps = ConectionDDBB.InsertMedicion(con);
-    			ps.setString(1, newTopic.getIdParking());
-    			ps.setString(2, newTopic.getIdSensor());
+    			ps.setString(1, newTopic.getIdSensor());
     	        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    			ps.setString(3, sdf.format(timestamp));
-    			ps.setString(4, newTopic.getValue());
-    			ps.setString(5, newTopic.getIdParking());
-    			ps.setString(6, newTopic.getIdSensor());
-    			ps.setString(7, sdf.format(timestamp));
-    			ps.setString(8, newTopic.getValue());
+    			ps.setString(2, sdf.format(timestamp));
+    			ps.setString(3, newTopic.getValue());
+    			ps.setString(4, newTopic.getIdAlert());
+    			ps.setString(5, newTopic.getIdSensor());
+    			ps.setString(6, sdf.format(timestamp));
+    			ps.setString(7, newTopic.getValue());
+    			ps.setString(8, newTopic.getIdAlert());
     			Log.log.info("Query to store Measurement=> {}", ps.toString());
     			ps.executeUpdate();
     		} catch (SQLException e)

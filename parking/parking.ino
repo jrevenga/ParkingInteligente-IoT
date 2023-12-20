@@ -52,8 +52,8 @@ void loop() {
             if (direccion == "entrada") {
               if (plazasLibres > 0 && smokeValue < 2800){
                 plazasLibres --;
-                mqttClient.publish("parking/plazasLibres", String(plazasLibres).c_str());
-                mqttClient.publish("parking/matricula/entrada", matricula.c_str());
+                mqttClient.publish("Ciudad1/Parking1/PlazasLibres", String(plazasLibres).c_str());
+                mqttClient.publish("Ciudad1/Parking1/entrada", matricula.c_str());
               }
             } else if (direccion == "salida") {
               if (plazasLibres < capacidad){

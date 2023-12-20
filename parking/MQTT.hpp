@@ -4,12 +4,7 @@ WiFiClient espClient;
 PubSubClient mqttClient(espClient);
 
 void SuscribeMqtt() {
-  //mqttClient.subscribe("parking/#");
-  mqttClient.subscribe("parking/matricula/#");
-  mqttClient.subscribe("parking/plazasLibres");
-  mqttClient.subscribe("parking/temperatura");
-  mqttClient.subscribe("parking/humedad");
-  mqttClient.subscribe("parking/humo");
+  mqttClient.subscribe("Ciudad1/Parking1/#");
 }
 
 String content = "";
