@@ -48,7 +48,7 @@ BEGIN
   
   WHILE i <= 100 DO
     INSERT INTO parking.historico_mediciones (id_sensor, fecha, valor, alerta)
-    VALUES (3, FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - days_back * 86400), 0.0, false);
+    VALUES (3, FROM_UNIXTIME(UNIX_TIMESTAMP(NOW()) - days_back * 86400), ROUND(RAND() * (2000.0 - 1.0), 2) + 1.0, false);
     
     SET days_back := days_back + 1;
     SET i := i + 1;
