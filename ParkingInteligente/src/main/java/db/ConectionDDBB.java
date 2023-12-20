@@ -262,7 +262,6 @@ public class ConectionDDBB
     } 
     public static PreparedStatement GetMonthCarHistoryFromParking(Connection con)
     {
-    	//HAY QUE CAMBIAR Entrada POR entrada
     	return getStatement(con,"SELECT DATE(fecha) AS fecha_entrada, COUNT(*) AS cantidad_coches\n"
     			+ "FROM historico_coches\n"
     			+ "JOIN parking ON historico_coches.id_parking = parking.id_parking\n"
@@ -283,19 +282,8 @@ public class ConectionDDBB
     public static PreparedStatement InsertMeasurement(Connection con) {
     return getStatement(con, 
         "INSERT INTO historico_mediciones (id_sensor, fecha, valor, alerta) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE id_sensor=?, fecha=?, valor=?, alerta=?;");
-    }
-
-    public static PreparedStatement GetLastValueStationSensor(Connection con)
-    {
-    	return getStatement(con,"select * from MEASUREMENT where id_parking=? AND id_sensor= ? ORDER BY fecha LIMIT 1;");  	
-    }
-    
-    public static PreparedStatement GetInfoFromStation(Connection con)
-    {
-    	return getStatement(con,"SELECT * FROM PARKING.SENSOR WHERE id_parking=?;");  	
-    }
-    
-    
+    }    
+	
     public static PreparedStatement GetActualCarHistoryFromParking(Connection con)
     {
     	return getStatement(con,"SELECT * FROM historico_coches\n"
