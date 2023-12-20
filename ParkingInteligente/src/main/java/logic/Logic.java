@@ -504,6 +504,11 @@ public class Logic
 		return registros;
 	}
 
+		public static void storeNewMedicion(Topics newTopic) {
+			// TODO Auto-generated method stub
+			
+		}
+
 	/**
 	 * 
 	 * @return History of the parkings

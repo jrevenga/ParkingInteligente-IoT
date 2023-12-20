@@ -34,25 +34,25 @@ public class MQTTSuscriber implements MqttCallback
 			Log.logmqtt.debug("Query to search cities=> {}", psCity.toString());
 			ResultSet rsCity = psCity.executeQuery();
 			while (rsCity.next()){
-				String topicCity = "City" + rsCity.getInt("ID");
-				topics.add("City" + rsCity.getInt("ID"));
+				String topicCity = "City" + rsCity.getInt("id_ciudad");
+				topics.add("City" + rsCity.getInt("id_ciudad"));
 				
-				//Get stations of the city
-				PreparedStatement psStations = ConectionDDBB.GetActuaTempFromParking(con);
-				psStations.setInt(1, rsCity.getInt("ID"));
-				Log.logmqtt.debug("Query to search stations=> {}", psStations.toString());
-				ResultSet rsStations = psStations.executeQuery();
-				while (rsStations.next()){
-					String topicStation = topicCity + "/Station" + rsStations.getInt("ID");
-					topics.add(topicStation);
+				//Get parkings of the city
+				PreparedStatement psParkings = ConectionDDBB.GetParkingsFromCity(con);
+				psParkings.setInt(1, rsCity.getInt("id_ciudad"));
+				Log.logmqtt.debug("Query to search parkings=> {}", psParkings.toString());
+				ResultSet rsParkings = psParkings.executeQuery();
+				while (rsParkings.next()){
+					String topicParking = topicCity + "/Parking" + rsParkings.getInt("id_parking");
+					topics.add(topicParking);
 					
-					//Get sensors form station
-					PreparedStatement psSensors = ConectionDDBB.GetActuaTempFromParking(con);
-					psSensors.setInt(1, rsStations.getInt("ID"));
+					//Get sensors form parking
+					PreparedStatement psSensors = ConectionDDBB.GetParkingSensors(con);
+					psSensors.setInt(1, rsParkings.getInt("id_parking"));
 					Log.logmqtt.debug("Query to search sensors=> {}", psSensors.toString());
 					ResultSet rsSensors = psSensors.executeQuery();
 					while (rsSensors.next()){
-						String topicSensor = topicStation + "/Sensor" + rsSensors.getInt("ID");
+						String topicSensor = topicParking + "/Sensor" + rsSensors.getInt("id_sensor");
 						topics.add(topicSensor);
 					}
 				}
@@ -73,7 +73,7 @@ public class MQTTSuscriber implements MqttCallback
             MqttClient sampleClient = new MqttClient(MQTTBroker.getBroker(), MQTTBroker.getClientId(), persistence);
             MqttConnectOptions connOpts = new MqttConnectOptions();
             //usuario y contraseña
-            connOpts.setUserName(MQTTBroker.getUsername());           
+            connOpts.setUserName(MQTTBroker.getUsername());
             connOpts.setPassword(MQTTBroker.getPassword().toCharArray());
             
             connOpts.setCleanSession(true);
@@ -94,12 +94,10 @@ public class MQTTSuscriber implements MqttCallback
         }
 	}
 	
-	@Override
-	public void connectionLost(Throwable cause) 
-	{	
-	}
+	public void connectionLost(Throwable cause) {
+        Log.logmqtt.error("Connection lost: {}", cause.getMessage());
+    }
 
-	@Override
 	public void messageArrived(String topic, MqttMessage message) throws Exception 
 	{
        Log.logmqtt.info("{}: {}", topic, message.toString());
@@ -109,21 +107,21 @@ public class MQTTSuscriber implements MqttCallback
        if(topic.contains("Sensor"))
        {
 		   newTopic.setIdCity(topics[0].replace("City", ""));
-		   newTopic.setIdStation(topics[1].replace("Station", ""));
+		   newTopic.setIdParking(topics[1].replace("Parking", ""));
 		   newTopic.setIdSensor(topics[2].replace("Sensor", ""));
-    	   Log.logmqtt.info("Mensaje from city{}, station{} sensor{}: {}", 
-    			   newTopic.getIdCity(), newTopic.getIdStation(), newTopic.getIdSensor(), message.toString());
+    	   Log.logmqtt.info("Mensaje from city{}, parking{} sensor{}: {}", 
+    			   newTopic.getIdCity(), newTopic.getIdParking(), newTopic.getIdSensor(), message.toString());
     	   
     	   //Store the information of the sensor
-    	   Logic.getActualCarHistoryFromParking(1,1);
+    	   Logic.storeNewMedicion(newTopic);
        }else
        {
-    	   if(topic.contains("Station"))
+    	   if(topic.contains("Parking"))
     	   {
     		   newTopic.setIdCity(topics[0].replace("City", ""));
-    		   newTopic.setIdStation(topics[1].replace("Station", ""));
-        	   Log.logmqtt.info("Mensaje from city{}, station{}: {}", 
-        			   newTopic.getIdCity(), newTopic.getIdStation(), message.toString());
+    		   newTopic.setIdParking(topics[1].replace("Parking", ""));
+        	   Log.logmqtt.info("Mensaje from city{}, parking{}: {}", 
+        			   newTopic.getIdCity(), newTopic.getIdParking(), message.toString());
     	   }else
     	   {
     		   if(topic.contains("City"))
@@ -140,8 +138,12 @@ public class MQTTSuscriber implements MqttCallback
 	}
 
 	@Override
-	public void deliveryComplete(IMqttDeliveryToken token) 
-	{		
+	public void deliveryComplete(IMqttDeliveryToken token) {
+	    try {
+	        Log.logmqtt.debug("Delivery complete. Message ID: {}", token.getMessageId());
+	    } catch (Exception e) {
+	        Log.logmqtt.error("Error in deliveryComplete: {}", e.getMessage());
+	    }
 	}
-}
 
+}
