@@ -3,25 +3,18 @@ package logic;
 import java.util.ArrayList;
 
 
-import db.ChartMeasurements;
-import db.City;
 import db.ConectionDDBB;
-import db.SensorType;
-import db.Sensor;
 import db.CarHistory;
 import db.Measurement;
-import db.Parking;
 import db.Topics;
 import db.Ocupacion;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
+
 
 
 public class Logic 
