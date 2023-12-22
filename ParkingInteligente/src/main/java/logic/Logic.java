@@ -2,30 +2,30 @@ package logic;
 
 import java.util.ArrayList;
 
-
+import db.City;
 import db.ConectionDDBB;
+import db.SensorType;
+import db.Sensor;
 import db.CarHistory;
 import db.Measurement;
+import db.Parking;
 import db.Topics;
 import db.Ocupacion;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Logic 
 {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return Temperature, Humidity and Gas concentration of the parking
-	 */
         public static ArrayList<Measurement> getMonthTempFromParking(int idCiudad, int idParking, int idTipo) {
             ArrayList<Measurement> temperaturas = new ArrayList<Measurement>();
             ConectionDDBB conector = new ConectionDDBB();
@@ -55,7 +55,6 @@ public class Logic
                         temperaturas.add(temp);
                     } while (rs.next());
 
-                    // Calcular la media solo si hay al menos una medición
                 } else {
                     Log.log.warn("El conjunto de resultados está vacío.");
                 }
@@ -118,16 +117,6 @@ public class Logic
     		return humedades;
     	}
 
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return Temperature, Humidity and Gas concentration of the parking
-	 */
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return Temperature, Humidity and Gas concentration of the parking
-	 */
         public static ArrayList<Measurement> getMonthGasesFromParking(int idCiudad, int idParking, int idTipo) {
             ArrayList<Measurement> gases = new ArrayList<Measurement>();
             ConectionDDBB conector = new ConectionDDBB();
@@ -157,7 +146,6 @@ public class Logic
                         gases.add(gas);
                     } while (rs.next());
 
-                    // Calcular la media solo si hay al menos una medición
                 } else {
                     Log.log.warn("El conjunto de resultados está vacío.");
                 }
@@ -222,11 +210,6 @@ public class Logic
             return humedades;
         }
 
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return Temperature, Humidity and Gas concentration of the parking
-	 */
 	public static ArrayList<Measurement> getMonthAlarmsFromParking(int idCiudad, int idParking)
 	{
 		ArrayList<Measurement> alarmas = new ArrayList<Measurement>();
@@ -271,11 +254,6 @@ public class Logic
 		return alarmas;
 	}
 
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return History of the parking
-	 */
 	public static ArrayList<Ocupacion> getMonthCarHistoryFromParking(int idCiudad, int idParking)
 	{
 		ArrayList<Ocupacion> ocupaciones = new ArrayList<Ocupacion>();
@@ -317,18 +295,6 @@ public class Logic
 		}
 		return ocupaciones;
 	}
-
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return History of the parking
-	 */
-        
-	/**
-	 * 
-	 * @param idParking ID of the parking to search
-	 * @return History of the parking
-	 */
         
 	public static int getEmptyPlacesFromParking(int idCiudad, int idParking)
 	{	

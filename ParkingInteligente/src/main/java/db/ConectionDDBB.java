@@ -143,23 +143,6 @@ public class ConectionDDBB
     	return getStatement(con,"SELECT plazas_totales FROM parking WHERE id_parking=?;");
     }
     
-    //falta
-    public static PreparedStatement GetParkingHistoricoMedicionesLastDays(Connection con)
-    {
-    	return getStatement(con,"SELECT date(DATE) as date, min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg, dayofweek(DATE) as dayofweek FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY and DATE<=now() group by date(DATE) ORDER BY DATE ASC;");  	
-    }
-    //falta
-    public static PreparedStatement GetParkingHistoricoMedicionesLastMonths(Connection con)
-    {
-    	return getStatement(con,"SELECT month(DATE) as month,min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? and date(DATE)>=date(now()) - INTERVAL ? DAY group by month(DATE) ORDER BY DATE ASC;");  	
-    }
-    
-    //falta
-    public static PreparedStatement GetParkingHistoricoMedicionesMonth(Connection con)
-    {
-    	return getStatement(con,"SELECT month(DATE) as date,  min(VALUE) as min, max(VALUE) as max, avg(VALUE) as avg FROM MEASUREMENT WHERE STATION_ID=? AND SENSORTYPE_ID=? group by month(DATE) ORDER BY DATE ASC;");  	
-    }
-    
     public static PreparedStatement GetUlimasMediciones(Connection con)
     {
     	return getStatement(con,"select * from historico_mediciones where id_sensor=? ORDER BY fecha LIMIT 1;");
@@ -183,11 +166,6 @@ public class ConectionDDBB
     public static PreparedStatement UpdatePlazasLibres(Connection con)
     {
     	return getStatement(con,"INSERT INTO parking (id_parking, nombre, latitud, longitud, id_ciudad, plazas_totales, plazas_disponibles) VALUES (?, \"ParkRetiro\", 2.5, 3.5, 1, 3, ?) ON DUPLICATE KEY UPDATE plazas_disponibles = ?;");
-    }
-    
-    public static PreparedStatement UpdatePlazasLibres2(Connection con)
-    {
-    	return getStatement(con,"INSERT INTO parking (plazas_libres) VALUES (?) ON duplicate key update plazas_libres=?;");  	
     }
     
     public static PreparedStatement InsertMatriculas(Connection con)
